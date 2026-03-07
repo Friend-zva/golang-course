@@ -13,9 +13,9 @@ import (
 type InfoRepo struct {
 	Name            string    `json:"name"`
 	Description     string    `json:"description"`
+	DateCreation    time.Time `json:"created_at"`
 	CountStargazers int       `json:"stargazers_count"`
 	CountForks      int       `json:"forks"`
-	DateCreation    time.Time `json:"created_at"`
 }
 
 func main() {
@@ -54,7 +54,7 @@ func main() {
 
 	fmt.Println("Repository     :", repo)
 	fmt.Println("Description    :", info.Description)
-	fmt.Println("Created  at    :", info.DateCreation.Format(time.RFC1123))
+	fmt.Println("Creation date  :", info.DateCreation.Format(time.RFC1123))
 	fmt.Println("Count of stars :", info.CountStargazers)
 	fmt.Println("Count of forks :", info.CountForks)
 }
