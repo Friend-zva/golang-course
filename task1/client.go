@@ -16,7 +16,6 @@ type InfoRepo struct {
 	CountStargazers int       `json:"stargazers_count"`
 	CountForks      int       `json:"forks"`
 	DateCreation    time.Time `json:"created_at"`
-	Message         string    `json:"message"`
 }
 
 func main() {
@@ -34,6 +33,14 @@ func main() {
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode == http.StatusNotFound {
+		log.Fatalf("client failed: repo '%s' not found\n", repo)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		log.Fatalf("client failed: %s\n", resp.Status)
+	}
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
@@ -45,14 +52,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if info.Message != "" {
-		fmt.Printf("client failed: %s\n", info.Message)
-		os.Exit(1)
-	}
-
-	fmt.Println("Repository    :", repo)
-	fmt.Println("Description   :", info.Description)
-	fmt.Println("Created  at   :", info.DateCreation.Format(time.RFC1123))
-	fmt.Println("Count of stars:", info.CountStargazers)
-	fmt.Println("Count of forks:", info.CountForks)
+	fmt.Println("Repository     :", repo)
+	fmt.Println("Description    :", info.Description)
+	fmt.Println("Created  at    :", info.DateCreation.Format(time.RFC1123))
+	fmt.Println("Count of stars :", info.CountStargazers)
+	fmt.Println("Count of forks :", info.CountForks)
 }
