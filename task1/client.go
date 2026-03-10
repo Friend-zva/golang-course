@@ -21,7 +21,7 @@ type InfoRepo struct {
 func main() {
 	args := os.Args
 	if len(args) != 2 {
-		log.Fatal("args: incorrect repository entry")
+		log.Fatal("Usage: golang-course-task1 <owner/repo>")
 	}
 
 	repo := args[1]
@@ -31,25 +31,29 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to close body response: %s\n", err)
+		}
+	}()
 
 	if resp.StatusCode == http.StatusNotFound {
-		log.Fatalf("client failed: repo '%s' not found\n", repo)
+		log.Fatalf("Repo '%s' not found\n", repo)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		log.Fatalf("client failed: %s\n", resp.Status)
+		log.Fatalf("Client failed: %s\n", resp.Status)
 	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to read body response: %s\n", err)
 	}
 
 	info := InfoRepo{}
 	err = json.Unmarshal(body, &info)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to serialize data: %s\n", err)
 	}
 
 	fmt.Println("Repository     :", repo)
