@@ -1,0 +1,15 @@
+name: Task1
+
+on:
+  push:
+    branches: ["main"]
+    paths: [./task1/**]
+  pull_request:
+    branches: ["**"]
+    paths: [./task1/**]
+
+jobs:
+  task:
+    uses: ./.github/workflows/template.yml
+    with:
+      task: task1
