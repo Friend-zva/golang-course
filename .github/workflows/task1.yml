@@ -2,7 +2,7 @@ name: Task1
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "task1"]
     paths: [./task1/**]
   pull_request:
     branches: ["**"]
