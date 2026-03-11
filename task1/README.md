@@ -22,6 +22,5 @@ go build
 
 ```shell
 ./golang-course-task1 FormalLanguageConstrainedPathQuerying/formal-lang-course
+./golang-course-task1 https://github.com/FormalLanguageConstrainedPathQuerying/formal-lang-course
 ```
-
-> ./golang-course-task1 owner/repo
