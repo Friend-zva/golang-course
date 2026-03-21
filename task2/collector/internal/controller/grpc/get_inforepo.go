@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/Friend-zva/golang-course-task2/collector/dto/driving"
-	pb "github.com/Friend-zva/golang-course-task2/collector/pkg/api/v1"
+	pb "github.com/Friend-zva/golang-course-task2/proto/pkg/api/v1"
 )
 
 func (s *Server) GetInfoRepo(ctx context.Context, req *pb.GetInfoRepoRequest) (*pb.GetInfoRepoResponse, error) {

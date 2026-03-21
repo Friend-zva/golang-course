@@ -10,7 +10,7 @@ import (
 	"github.com/Friend-zva/golang-course-task2/collector/internal/adapter/github"
 	grpcS "github.com/Friend-zva/golang-course-task2/collector/internal/controller/grpc"
 	"github.com/Friend-zva/golang-course-task2/collector/internal/usecase"
-	pb "github.com/Friend-zva/golang-course-task2/collector/pkg/api/v1"
+	pb "github.com/Friend-zva/golang-course-task2/proto/pkg/api/v1"
 )
 
 func main() {

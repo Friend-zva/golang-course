@@ -6,12 +6,12 @@ install-tools:
 .PHONY: generate
 generate:
 	mkdir -p pkg/api/v1
-	protoc -I api/proto/v1 \
+	protoc -I api/v1 \
 		--go_out=pkg/api/v1 \
 	 	--go_opt=paths=source_relative \
 		--go-grpc_out=pkg/api/v1 \
 		--go-grpc_opt=paths=source_relative \
-		api/proto/v1/service.proto
+		api/v1/service.proto
 
 .PHONY: all
 all: install-tools generate

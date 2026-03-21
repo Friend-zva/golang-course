@@ -7,7 +7,7 @@ import (
 
 	"github.com/Friend-zva/golang-course-task2/api_gateway/dto/driven"
 	"github.com/Friend-zva/golang-course-task2/api_gateway/internal/domain"
-	pb "github.com/Friend-zva/golang-course-task2/api_gateway/pkg/api/v1"
+	pb "github.com/Friend-zva/golang-course-task2/proto/pkg/api/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
