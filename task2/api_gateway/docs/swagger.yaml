@@ -1,0 +1,65 @@
+basePath: /
+definitions:
+  driving.GetInfoRepoOutput:
+    properties:
+      count_forks:
+        example: 45
+        type: integer
+      count_stargazers:
+        example: 52
+        type: integer
+      date_creation:
+        example: Fri, 20 Aug 2021 09:38:00 UTC
+        type: string
+      description:
+        example: Homework for GoLang course 2026
+        type: string
+      name:
+        example: golang-course
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API Server for getting GitHub repository information via gRPC Collector
+  title: API Gateway
+  version: 1.0.0
+paths:
+  /{owner}/{repo}:
+    get:
+      consumes:
+      - application/json
+      description: Get information about a GitHub repository such as name, description,
+        stars, forks, and creation date
+      parameters:
+      - description: GitHub username or organization name
+        example: '"suvorovrain"'
+        in: path
+        name: owner
+        required: true
+        type: string
+      - description: Repository name
+        example: '"golang-course"'
+        in: path
+        name: repo
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response with repository info
+          schema:
+            $ref: '#/definitions/driving.GetInfoRepoOutput'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get repository info
+      tags:
+      - repository
+swagger: "2.0"
