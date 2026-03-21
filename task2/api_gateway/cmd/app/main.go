@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Friend-zva/golang-course-task2/api_gateway/config"
 	_ "github.com/Friend-zva/golang-course-task2/api_gateway/docs"
 	"github.com/Friend-zva/golang-course-task2/api_gateway/internal/adapter/collector"
 	httpH "github.com/Friend-zva/golang-course-task2/api_gateway/internal/controller/http"
@@ -18,9 +19,11 @@ import (
 // @host localhost:8080
 // @BasePath /
 func main() {
-	clientC := collector.CollectorAPI{}
+	cfg := config.MustLoad("config/local.yaml")
 
-	info := usecase.NewInfoRepo(&clientC)
+	clientColl := collector.CollectorAPI{}
+
+	info := usecase.NewInfoRepo(&clientColl)
 
 	handler := httpH.NewHandlers(info)
 
@@ -28,7 +31,15 @@ func main() {
 	router.Get("/{owner}/{repo}", handler.GetInfoRepo)
 	router.Get("/swagger/*", httpSwagger.WrapHandler)
 
-	log.Println("Listening server at :8080")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	server := &http.Server{
+		Addr:         cfg.HTTPServer.Address,
+		Handler:      router,
+		ReadTimeout:  cfg.HTTPServer.Timeout,
+		WriteTimeout: cfg.HTTPServer.Timeout,
+		IdleTimeout:  cfg.HTTPServer.IdleTimeout,
+	}
+
+	log.Printf("Starting server on %s", cfg.HTTPServer.Address)
+	log.Fatal(server.ListenAndServe())
 
 }

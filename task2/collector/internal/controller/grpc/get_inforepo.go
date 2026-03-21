@@ -8,13 +8,13 @@ import (
 	pb "github.com/Friend-zva/golang-course-task2/proto/pkg/api/v1"
 )
 
-func (s *Server) GetInfoRepo(ctx context.Context, req *pb.GetInfoRepoRequest) (*pb.GetInfoRepoResponse, error) {
+func (h *Handler) GetInfoRepo(ctx context.Context, req *pb.GetInfoRepoRequest) (*pb.GetInfoRepoResponse, error) {
 	input := driving.GetInfoRepoInput{
 		Owner: req.Owner,
 		Repo:  req.Repo,
 	}
 
-	output, err := s.infoRepo.GetInfoRepo(ctx, input)
+	output, err := h.infoRepo.GetInfoRepo(ctx, input)
 	if err != nil {
 		return &pb.GetInfoRepoResponse{}, err
 	}

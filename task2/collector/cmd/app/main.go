@@ -7,6 +7,7 @@ import (
 
 	"google.golang.org/grpc"
 
+	"github.com/Friend-zva/golang-course-task2/collector/config"
 	"github.com/Friend-zva/golang-course-task2/collector/internal/adapter/github"
 	grpcS "github.com/Friend-zva/golang-course-task2/collector/internal/controller/grpc"
 	"github.com/Friend-zva/golang-course-task2/collector/internal/usecase"
@@ -14,22 +15,29 @@ import (
 )
 
 func main() {
-	listener, err := net.Listen("tcp", ":8081")
+	cfg := config.MustLoad("config/local.yaml")
+
+	listener, err := net.Listen("tcp", cfg.CollectorServer.Address)
 	if err != nil {
 		log.Fatalf("Failed to listen: (%s)", err)
 	}
 
-	clientGH := github.NewGitHubAPI(http.DefaultClient)
+	httpClient := &http.Client{
+		Timeout: cfg.CollectorServer.Timeout,
+	}
+	clientGH := github.NewGitHubAPI(httpClient)
 
 	info := usecase.NewInfoRepo(clientGH)
 
-	serverGRPC := grpcS.NewServer(info)
+	handler := grpcS.NewHandler(info)
 
-	server := grpc.NewServer()
-	pb.RegisterInfoRepoServiceServer(server, serverGRPC)
+	grpcServer := grpc.NewServer(
+		grpc.ConnectionTimeout(cfg.CollectorServer.IdleTimeout),
+	)
+	pb.RegisterInfoRepoServiceServer(grpcServer, handler)
 
-	log.Printf("Listening server at %s", listener.Addr())
-	if err := server.Serve(listener); err != nil {
+	log.Printf("Starting server on %s", listener.Addr())
+	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatalf("Failed to serve: (%s)", err)
 	}
 }

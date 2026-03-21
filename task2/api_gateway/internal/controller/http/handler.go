@@ -4,12 +4,12 @@ import (
 	"github.com/Friend-zva/golang-course-task2/api_gateway/internal/usecase"
 )
 
-type Handlers struct {
+type Handler struct {
 	infoRepo *usecase.InfoRepo
 }
 
-func NewHandlers(infoRepo *usecase.InfoRepo) *Handlers {
-	return &Handlers{
+func NewHandlers(infoRepo *usecase.InfoRepo) *Handler {
+	return &Handler{
 		infoRepo: infoRepo,
 	}
 }

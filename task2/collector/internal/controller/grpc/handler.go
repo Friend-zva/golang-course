@@ -5,13 +5,13 @@ import (
 	pb "github.com/Friend-zva/golang-course-task2/proto/pkg/api/v1"
 )
 
-type Server struct {
+type Handler struct {
 	pb.UnimplementedInfoRepoServiceServer
 	infoRepo *usecase.InfoRepo
 }
 
-func NewServer(iR *usecase.InfoRepo) *Server {
-	return &Server{
+func NewHandler(iR *usecase.InfoRepo) *Handler {
+	return &Handler{
 		infoRepo: iR,
 	}
 }

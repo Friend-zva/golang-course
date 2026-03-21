@@ -19,7 +19,7 @@ import (
 // @Failure 400 {string} string "Bad Request"
 // @Failure 500 {string} string "Internal Server Error"
 // @Router /{owner}/{repo} [get]
-func (h *Handlers) GetInfoRepo(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetInfoRepo(w http.ResponseWriter, r *http.Request) {
 	input := driving.GetInfoRepoInput{
 		Owner: chi.URLParam(r, "owner"),
 		Repo:  chi.URLParam(r, "repo"),
