@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/Friend-zva/golang-course-task2/api_gateway/config"
-	_ "github.com/Friend-zva/golang-course-task2/api_gateway/docs"
+	"github.com/Friend-zva/golang-course-task2/api_gateway/docs"
 	"github.com/Friend-zva/golang-course-task2/api_gateway/internal/adapter/collector"
 	httpH "github.com/Friend-zva/golang-course-task2/api_gateway/internal/controller/http"
 	"github.com/Friend-zva/golang-course-task2/api_gateway/internal/usecase"
@@ -16,20 +16,23 @@ import (
 // @title API Gateway
 // @version 1.0.0
 // @description API Server for getting GitHub repository information via gRPC Collector
-// @host localhost:8080
 // @BasePath /
 func main() {
 	cfg := config.MustLoad("config/local.yaml")
 
-	clientColl := collector.CollectorAPI{}
+	docs.SwaggerInfo.Host = cfg.HTTPServer.Address
 
-	info := usecase.NewInfoRepo(&clientColl)
+	clientColl := collector.NewCollectorAPI(cfg.CollectorClient.Address)
+
+	info := usecase.NewInfoRepo(clientColl)
 
 	handler := httpH.NewHandlers(info)
 
 	router := chi.NewRouter()
+
 	router.Get("/{owner}/{repo}", handler.GetInfoRepo)
 	router.Get("/swagger/*", httpSwagger.WrapHandler)
+	router.NotFound(handler.NotFound)
 
 	server := &http.Server{
 		Addr:         cfg.HTTPServer.Address,

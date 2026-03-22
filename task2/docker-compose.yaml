@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  collector:
+    build:
+      context: .
+      dockerfile: collector/Dockerfile
+    ports:
+      - "8081:8081"
+    networks:
+      - repo-network
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api_gateway/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - collector
+    networks:
+      - repo-network
+    environment:
+      - COLLECTOR_CLIENT_ADDRESS=collector:8081
+      
+networks:
+  repo-network:
+    driver: bridge

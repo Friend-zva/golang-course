@@ -6,15 +6,11 @@
         "contact": {},
         "version": "1.0.0"
     },
-    "host": "localhost:8080",
     "basePath": "/",
     "paths": {
         "/{owner}/{repo}": {
             "get": {
                 "description": "Get information about a GitHub repository such as name, description, stars, forks, and creation date",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -44,7 +40,7 @@
                     "200": {
                         "description": "Successful response with repository info",
                         "schema": {
-                            "$ref": "#/definitions/driving.GetInfoRepoOutput"
+                            "$ref": "#/definitions/github_com_Friend-zva_golang-course-task2_api_gateway_dto_driving.GetInfoRepoOutput"
                         }
                     },
                     "400": {
@@ -64,7 +60,7 @@
         }
     },
     "definitions": {
-        "driving.GetInfoRepoOutput": {
+        "github_com_Friend-zva_golang-course-task2_api_gateway_dto_driving.GetInfoRepoOutput": {
             "type": "object",
             "properties": {
                 "count_forks": {

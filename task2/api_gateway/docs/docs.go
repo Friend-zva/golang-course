@@ -18,9 +18,6 @@ const docTemplate = `{
         "/{owner}/{repo}": {
             "get": {
                 "description": "Get information about a GitHub repository such as name, description, stars, forks, and creation date",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -50,7 +47,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Successful response with repository info",
                         "schema": {
-                            "$ref": "#/definitions/driving.GetInfoRepoOutput"
+                            "$ref": "#/definitions/github_com_Friend-zva_golang-course-task2_api_gateway_dto_driving.GetInfoRepoOutput"
                         }
                     },
                     "400": {
@@ -70,7 +67,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "driving.GetInfoRepoOutput": {
+        "github_com_Friend-zva_golang-course-task2_api_gateway_dto_driving.GetInfoRepoOutput": {
             "type": "object",
             "properties": {
                 "count_forks": {
@@ -101,7 +98,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0.0",
-	Host:             "localhost:8080",
+	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "API Gateway",

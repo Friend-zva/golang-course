@@ -13,11 +13,18 @@ import (
 )
 
 type CollectorAPI struct {
-	client pb.InfoRepoServiceClient
+	client  pb.InfoRepoServiceClient
+	address string
+}
+
+func NewCollectorAPI(address string) *CollectorAPI {
+	return &CollectorAPI{
+		address: address,
+	}
 }
 
 func (c *CollectorAPI) GetInfoRepo(ctx context.Context, input driven.CollectorInput) (domain.InfoRepo, error) {
-	conn, err := grpc.NewClient(":8081", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(c.address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return domain.InfoRepo{}, fmt.Errorf("Failed to create connection (%w)", err)
 	}
