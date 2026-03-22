@@ -3,7 +3,8 @@ package controller
 import (
 	"context"
 	"errors"
-	"time"
+
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/Friend-zva/golang-course-task2/collector/dto/driving"
 	"github.com/Friend-zva/golang-course-task2/collector/internal/domain"
@@ -39,7 +40,7 @@ func (h *Handler) GetInfoRepo(ctx context.Context, req *pb.GetInfoRepoRequest) (
 	return &pb.GetInfoRepoResponse{
 		Name:            output.Name,
 		Description:     output.Description,
-		DateCreation:    output.DateCreation.Format(time.RFC1123),
+		DateCreation:    timestamppb.New(output.DateCreation),
 		CountStargazers: int32(output.CountStargazers),
 		CountForks:      int32(output.CountForks),
 	}, nil

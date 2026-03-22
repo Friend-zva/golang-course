@@ -33,7 +33,7 @@ func main() {
 	}
 	defer func() {
 		if err := clientColl.Close(); err != nil {
-			log.Printf("failed to close connection: %s\n", err)
+			log.Printf("failed to close connection: %s", err)
 		}
 	}()
 
@@ -71,7 +71,7 @@ func main() {
 	defer cancel()
 
 	if err := server.Shutdown(ctx); err != nil {
-		log.Printf("Server forced to shutdown: %s\n", err)
+		log.Printf("Server forced to shutdown: %s", err)
 	}
 	log.Println("API Gateway server exited properly")
 }

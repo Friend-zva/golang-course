@@ -3,7 +3,6 @@ package collector
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/Friend-zva/golang-course-task2/api_gateway/dto/driven"
 	"github.com/Friend-zva/golang-course-task2/api_gateway/internal/domain"
@@ -59,15 +58,10 @@ func (c *CollectorAPI) GetInfoRepo(ctx context.Context, input driven.CollectorIn
 		return domain.InfoRepo{}, domain.ErrInternal.Wrap(err)
 	}
 
-	dateCreation, err := time.Parse(time.RFC1123, resp.DateCreation)
-	if err != nil {
-		return domain.InfoRepo{}, domain.ErrInternal.Wrap(fmt.Errorf("failed to parse date: %w", err))
-	}
-
 	return domain.InfoRepo{
 		Name:            resp.Name,
 		Description:     resp.Description,
-		DateCreation:    dateCreation,
+		DateCreation:    resp.DateCreation.AsTime(),
 		CountStargazers: int(resp.CountStargazers),
 		CountForks:      int(resp.CountForks),
 	}, nil

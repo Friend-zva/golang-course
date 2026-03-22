@@ -9,6 +9,7 @@ package v1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -77,7 +78,7 @@ type GetInfoRepoResponse struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
 	Name            string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Description     string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	DateCreation    string                 `protobuf:"bytes,3,opt,name=date_creation,proto3" json:"date_creation,omitempty"`
+	DateCreation    *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=date_creation,proto3" json:"date_creation,omitempty"`
 	CountStargazers int32                  `protobuf:"varint,4,opt,name=count_stargazers,proto3" json:"count_stargazers,omitempty"`
 	CountForks      int32                  `protobuf:"varint,5,opt,name=count_forks,proto3" json:"count_forks,omitempty"`
 	unknownFields   protoimpl.UnknownFields
@@ -128,11 +129,11 @@ func (x *GetInfoRepoResponse) GetDescription() string {
 	return ""
 }
 
-func (x *GetInfoRepoResponse) GetDateCreation() string {
+func (x *GetInfoRepoResponse) GetDateCreation() *timestamppb.Timestamp {
 	if x != nil {
 		return x.DateCreation
 	}
-	return ""
+	return nil
 }
 
 func (x *GetInfoRepoResponse) GetCountStargazers() int32 {
@@ -153,14 +154,14 @@ var File_service_proto protoreflect.FileDescriptor
 
 const file_service_proto_rawDesc = "" +
 	"\n" +
-	"\rservice.proto\x12\x10collector.api.v1\">\n" +
+	"\rservice.proto\x12\x10collector.api.v1\x1a\x1fgoogle/protobuf/timestamp.proto\">\n" +
 	"\x12GetInfoRepoRequest\x12\x14\n" +
 	"\x05owner\x18\x01 \x01(\tR\x05owner\x12\x12\n" +
-	"\x04repo\x18\x02 \x01(\tR\x04repo\"\xbf\x01\n" +
+	"\x04repo\x18\x02 \x01(\tR\x04repo\"\xdb\x01\n" +
 	"\x13GetInfoRepoResponse\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +
-	"\vdescription\x18\x02 \x01(\tR\vdescription\x12$\n" +
-	"\rdate_creation\x18\x03 \x01(\tR\rdate_creation\x12*\n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\x12@\n" +
+	"\rdate_creation\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\rdate_creation\x12*\n" +
 	"\x10count_stargazers\x18\x04 \x01(\x05R\x10count_stargazers\x12 \n" +
 	"\vcount_forks\x18\x05 \x01(\x05R\vcount_forks2o\n" +
 	"\x0fInfoRepoService\x12\\\n" +
@@ -180,17 +181,19 @@ func file_service_proto_rawDescGZIP() []byte {
 
 var file_service_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_service_proto_goTypes = []any{
-	(*GetInfoRepoRequest)(nil),  // 0: collector.api.v1.GetInfoRepoRequest
-	(*GetInfoRepoResponse)(nil), // 1: collector.api.v1.GetInfoRepoResponse
+	(*GetInfoRepoRequest)(nil),    // 0: collector.api.v1.GetInfoRepoRequest
+	(*GetInfoRepoResponse)(nil),   // 1: collector.api.v1.GetInfoRepoResponse
+	(*timestamppb.Timestamp)(nil), // 2: google.protobuf.Timestamp
 }
 var file_service_proto_depIdxs = []int32{
-	0, // 0: collector.api.v1.InfoRepoService.GetInfoRepo:input_type -> collector.api.v1.GetInfoRepoRequest
-	1, // 1: collector.api.v1.InfoRepoService.GetInfoRepo:output_type -> collector.api.v1.GetInfoRepoResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2, // 0: collector.api.v1.GetInfoRepoResponse.date_creation:type_name -> google.protobuf.Timestamp
+	0, // 1: collector.api.v1.InfoRepoService.GetInfoRepo:input_type -> collector.api.v1.GetInfoRepoRequest
+	1, // 2: collector.api.v1.InfoRepoService.GetInfoRepo:output_type -> collector.api.v1.GetInfoRepoResponse
+	2, // [2:3] is the sub-list for method output_type
+	1, // [1:2] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_service_proto_init() }
