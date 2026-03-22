@@ -42,7 +42,6 @@ func main() {
 		IdleTimeout:  cfg.HTTPServer.IdleTimeout,
 	}
 
-	log.Printf("Starting server on %s", cfg.HTTPServer.Address)
+	log.Printf("starting server on %s", cfg.HTTPServer.Address)
 	log.Fatal(server.ListenAndServe())
-
 }

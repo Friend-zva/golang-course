@@ -2,10 +2,14 @@ package controller
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/Friend-zva/golang-course-task2/collector/dto/driving"
+	"github.com/Friend-zva/golang-course-task2/collector/internal/domain"
 	pb "github.com/Friend-zva/golang-course-task2/proto/pkg/api/v1"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func (h *Handler) GetInfoRepo(ctx context.Context, req *pb.GetInfoRepoRequest) (*pb.GetInfoRepoResponse, error) {
@@ -16,7 +20,20 @@ func (h *Handler) GetInfoRepo(ctx context.Context, req *pb.GetInfoRepoRequest) (
 
 	output, err := h.infoRepo.GetInfoRepo(ctx, input)
 	if err != nil {
-		return &pb.GetInfoRepoResponse{}, err
+		var appErr *domain.AppError
+		if errors.As(err, &appErr) {
+			grpcCode := codes.Internal
+			switch appErr.Code {
+			case domain.RepoNotFound:
+				grpcCode = codes.NotFound
+			case domain.CodeInternal:
+				grpcCode = codes.Internal
+			case domain.CodeExternal:
+				grpcCode = codes.Unavailable
+			}
+			return nil, status.Error(grpcCode, appErr.Message)
+		}
+		return nil, status.Error(codes.Internal, "internal server error")
 	}
 
 	return &pb.GetInfoRepoResponse{

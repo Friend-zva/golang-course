@@ -5,7 +5,6 @@ type GetInfoRepoInput struct {
 	Repo  string
 }
 
-// GetInfoRepoOutput represents the repository data returned to the user
 type GetInfoRepoOutput struct {
 	Name            string `json:"name" example:"golang-course"`
 	Description     string `json:"description" example:"Homework for GoLang course 2026"`

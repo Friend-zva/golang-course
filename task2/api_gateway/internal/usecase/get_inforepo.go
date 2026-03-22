@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/Friend-zva/golang-course-task2/api_gateway/dto/driven"
@@ -14,7 +13,7 @@ func (iR *InfoRepo) GetInfoRepo(ctx context.Context, input driving.GetInfoRepoIn
 
 	info, err := iR.collector.GetInfoRepo(ctx, inputGH)
 	if err != nil {
-		return driving.GetInfoRepoOutput{}, fmt.Errorf("Failed to get info: (%w)", err)
+		return driving.GetInfoRepoOutput{}, err
 	}
 
 	return driving.GetInfoRepoOutput{

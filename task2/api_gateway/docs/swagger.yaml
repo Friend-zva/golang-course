@@ -18,6 +18,12 @@ definitions:
         example: golang-course
         type: string
     type: object
+  internal_controller_http.ErrorResponse:
+    properties:
+      error:
+        example: repo 'go-course' not found
+        type: string
+    type: object
 info:
   contact: {}
   description: API Server for getting GitHub repository information via gRPC Collector
@@ -48,14 +54,22 @@ paths:
           description: Successful response with repository info
           schema:
             $ref: '#/definitions/github_com_Friend-zva_golang-course-task2_api_gateway_dto_driving.GetInfoRepoOutput'
-        "400":
-          description: Bad Request
+        "404":
+          description: Not Found" example("")
           schema:
-            type: string
+            $ref: '#/definitions/internal_controller_http.ErrorResponse'
         "500":
-          description: Internal Server Error
+          description: Internal Server Error" example("")
           schema:
-            type: string
+            $ref: '#/definitions/internal_controller_http.ErrorResponse'
+        "502":
+          description: Bad Gateway" example("1")
+          schema:
+            $ref: '#/definitions/internal_controller_http.ErrorResponse'
+        "504":
+          description: Gateway Timeout" example("12")
+          schema:
+            $ref: '#/definitions/internal_controller_http.ErrorResponse'
       summary: Get repository info
       tags:
       - repository

@@ -9,7 +9,7 @@ import (
 
 	"github.com/Friend-zva/golang-course-task2/collector/config"
 	"github.com/Friend-zva/golang-course-task2/collector/internal/adapter/github"
-	grpcS "github.com/Friend-zva/golang-course-task2/collector/internal/controller/grpc"
+	grpcH "github.com/Friend-zva/golang-course-task2/collector/internal/controller/grpc"
 	"github.com/Friend-zva/golang-course-task2/collector/internal/usecase"
 	pb "github.com/Friend-zva/golang-course-task2/proto/pkg/api/v1"
 )
@@ -19,7 +19,7 @@ func main() {
 
 	listener, err := net.Listen("tcp", cfg.CollectorServer.Address)
 	if err != nil {
-		log.Fatalf("Failed to listen: (%s)", err)
+		log.Fatalf("failed to listen: %s", err)
 	}
 
 	httpClient := &http.Client{
@@ -29,15 +29,15 @@ func main() {
 
 	info := usecase.NewInfoRepo(clientGH)
 
-	handler := grpcS.NewHandler(info)
+	handler := grpcH.NewHandler(info)
 
 	grpcServer := grpc.NewServer(
 		grpc.ConnectionTimeout(cfg.CollectorServer.IdleTimeout),
 	)
 	pb.RegisterInfoRepoServiceServer(grpcServer, handler)
 
-	log.Printf("Starting server on %s", listener.Addr())
+	log.Printf("starting server on %s", listener.Addr())
 	if err := grpcServer.Serve(listener); err != nil {
-		log.Fatalf("Failed to serve: (%s)", err)
+		log.Fatalf("failed to serve: %s", err)
 	}
 }

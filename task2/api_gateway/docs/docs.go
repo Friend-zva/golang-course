@@ -50,16 +50,28 @@ const docTemplate = `{
                             "$ref": "#/definitions/github_com_Friend-zva_golang-course-task2_api_gateway_dto_driving.GetInfoRepoOutput"
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "404": {
+                        "description": "Not Found\" example(\"\")",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/internal_controller_http.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Internal Server Error\" example(\"\")",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/internal_controller_http.ErrorResponse"
+                        }
+                    },
+                    "502": {
+                        "description": "Bad Gateway\" example(\"1\")",
+                        "schema": {
+                            "$ref": "#/definitions/internal_controller_http.ErrorResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout\" example(\"12\")",
+                        "schema": {
+                            "$ref": "#/definitions/internal_controller_http.ErrorResponse"
                         }
                     }
                 }
@@ -89,6 +101,15 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "golang-course"
+                }
+            }
+        },
+        "internal_controller_http.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "repo 'go-course' not found"
                 }
             }
         }

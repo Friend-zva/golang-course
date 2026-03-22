@@ -29,12 +29,12 @@ func (g *GitHubAPI) GetInfoRepo(ctx context.Context, input driven.GitHubRepoInpu
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return domain.InfoRepo{}, fmt.Errorf("Failed to create request (%w)", err)
+		return domain.InfoRepo{}, domain.ErrInternal.Wrap(fmt.Errorf("failed to create request: %w", err))
 	}
 
 	resp, err := g.client.Do(req)
 	if err != nil {
-		return domain.InfoRepo{}, fmt.Errorf("Failed to get response (%w)", err)
+		return domain.InfoRepo{}, domain.ErrExternal.Wrap(err)
 	}
 	defer resp.Body.Close()
 
@@ -42,20 +42,21 @@ func (g *GitHubAPI) GetInfoRepo(ctx context.Context, input driven.GitHubRepoInpu
 	case http.StatusOK:
 		break
 	case http.StatusNotFound:
-		return domain.InfoRepo{}, fmt.Errorf("Repo '%s' not found", input.Repo)
+		return domain.InfoRepo{}, domain.ErrNotFound.WithMessage(fmt.Sprintf("repo '%s' not found", input.Repo))
 	default:
-		return domain.InfoRepo{}, fmt.Errorf("Client failed: %s", resp.Status)
+		return domain.InfoRepo{}, domain.ErrExternal.WithMessage(fmt.Sprintf("github api returned status: %s", resp.Status))
 	}
 
 	body, err := io.ReadAll(resp.Body)
+
 	if err != nil {
-		return domain.InfoRepo{}, fmt.Errorf("Failed to read body response (%w)", err)
+		return domain.InfoRepo{}, domain.ErrInternal.Wrap(fmt.Errorf("failed to read body response: %w", err))
 	}
 
 	output := driven.GitHubRepoOutput{}
 	err = json.Unmarshal(body, &output)
 	if err != nil {
-		return domain.InfoRepo{}, fmt.Errorf("Failed to serialize data (%w)", err)
+		return domain.InfoRepo{}, domain.ErrInternal.Wrap(fmt.Errorf("failed to serialize data: %w", err))
 	}
 
 	return domain.InfoRepo{
