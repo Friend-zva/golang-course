@@ -51,25 +51,25 @@ const docTemplate = `{
                         }
                     },
                     "404": {
-                        "description": "Not Found\" example(\"\")",
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/internal_controller_http.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error\" example(\"\")",
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/internal_controller_http.ErrorResponse"
                         }
                     },
                     "502": {
-                        "description": "Bad Gateway\" example(\"1\")",
+                        "description": "Bad Gateway",
                         "schema": {
                             "$ref": "#/definitions/internal_controller_http.ErrorResponse"
                         }
                     },
                     "504": {
-                        "description": "Gateway Timeout\" example(\"12\")",
+                        "description": "Gateway Timeout",
                         "schema": {
                             "$ref": "#/definitions/internal_controller_http.ErrorResponse"
                         }
