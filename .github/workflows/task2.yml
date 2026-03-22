@@ -70,7 +70,7 @@ jobs:
           task: task2
 
       - name: Generate proto
-        working-directory: ./proto
+        working-directory: ./task2/proto
         run: make all
 
       - name: Build API Gateway
@@ -80,3 +80,7 @@ jobs:
       - name: Build Collector
         working-directory: ./task2/collector
         run: go build -o bin/collector ./cmd/app
+
+      - name: Test Docker Compose Build
+        working-directory: ./task2
+        run: docker compose build

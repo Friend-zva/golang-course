@@ -15,13 +15,13 @@ type Config struct {
 }
 
 type HTTPServerConfig struct {
-	Address     string        `yaml:"address" env-default:"localhost:8080"`
+	Address     string        `yaml:"address" env:"HTTP_SERVER_ADDRESS" env-default:"localhost:8080"`
 	Timeout     time.Duration `yaml:"timeout" env-default:"4s"`
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"60s"`
 }
 
 type CollectorConfig struct {
-	Address string `yaml:"address" env-default:"localhost:8081"`
+	Address string `yaml:"address" env:"COLLECTOR_CLIENT_ADDRESS" env-default:"localhost:8081"`
 }
 
 func MustLoad(pathConfig string) *Config {
