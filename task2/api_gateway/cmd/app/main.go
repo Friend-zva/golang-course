@@ -20,7 +20,7 @@ import (
 func main() {
 	cfg := config.MustLoad("config/local.yaml")
 
-	docs.SwaggerInfo.Host = cfg.HTTPServer.Address
+	docs.SwaggerInfo.Host = "localhost:8080" // Swagger inside browser wants to fetch from `localhost:8080`
 
 	clientColl := collector.NewCollectorAPI(cfg.CollectorClient.Address)
 
