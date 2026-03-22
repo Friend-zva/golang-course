@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 
 	"github.com/Friend-zva/golang-course-task2/collector/dto/driven"
@@ -36,7 +37,11 @@ func (g *GitHubAPI) GetInfoRepo(ctx context.Context, input driven.GitHubRepoInpu
 	if err != nil {
 		return domain.InfoRepo{}, domain.ErrExternal.Wrap(err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			log.Printf("failed to close body response: %s", err)
+		}
+	}()
 
 	switch resp.StatusCode {
 	case http.StatusOK:

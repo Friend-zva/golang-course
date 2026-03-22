@@ -3,6 +3,7 @@ package collector
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/Friend-zva/golang-course-task2/api_gateway/dto/driven"
@@ -15,7 +16,7 @@ import (
 )
 
 type CollectorAPI struct {
-	client  pb.InfoRepoServiceClient
+	pb.InfoRepoServiceClient
 	address string
 }
 
@@ -30,7 +31,11 @@ func (c *CollectorAPI) GetInfoRepo(ctx context.Context, input driven.CollectorIn
 	if err != nil {
 		return domain.InfoRepo{}, domain.ErrInternal.Wrap(fmt.Errorf("failed to create connection: %w", err))
 	}
-	defer conn.Close()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			log.Printf("failed to close connection: %s", err)
+		}
+	}()
 
 	client := pb.NewInfoRepoServiceClient(conn)
 

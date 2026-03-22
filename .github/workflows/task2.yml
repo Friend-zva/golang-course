@@ -1,16 +1,16 @@
-name: Task1
+name: task2
 
 on:
   workflow_dispatch:
   push:
-    branches: ["main", "task1"]
-    paths: [./task1/**]
+    branches: ["main", "task2"]
+    paths: [./task2/**]
   pull_request:
     branches: ["**"]
-    paths: [./task1/**]
+    paths: [./task2/**]
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-task1
+  group: ${{ github.workflow }}-${{ github.ref }}-task2
   cancel-in-progress: true
 
 jobs:
@@ -25,10 +25,10 @@ jobs:
       - name: Setup Go
         uses: ./.github/actions/setup-go
         with:
-          task: task1
+          task: task2
 
       - name: Run gofmt
-        working-directory: ./task1
+        working-directory: ./task2
         run: gofmt -d .
 
   linter:
@@ -42,13 +42,19 @@ jobs:
       - name: Setup Go
         uses: ./.github/actions/setup-go
         with:
-          task: task1
+          task: task2
 
-      - name: Run golangci-lint
+      - name: Run golangci-lint for API Gateway
         uses: golangci/golangci-lint-action@v3
         with:
           version: v2.10
-          working-directory: ./task1
+          working-directory: ./task2/api_gateway
+
+      - name: Run golangci-lint for Collector
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v2.10
+          working-directory: ./task2/collector
 
   tests:
     name: Build
@@ -61,8 +67,16 @@ jobs:
       - name: Setup Go
         uses: ./.github/actions/setup-go
         with:
-          task: task1
+          task: task2
 
-      - name: Build
-        working-directory: ./task1
-        run: go build -v
+      - name: Generate proto
+        working-directory: ./proto
+        run: make all
+
+      - name: Build API Gateway
+        working-directory: ./task2/api_gateway
+        run: go build -o bin/api_gateway ./cmd/app
+
+      - name: Build Collector
+        working-directory: ./task2/collector
+        run: go build -o bin/collector ./cmd/app
