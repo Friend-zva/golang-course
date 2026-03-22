@@ -73,7 +73,30 @@ cd api_gateway
 go run cmd/app/main.go
 ```
 
-### Swagger Documentation
+## Test
+
+You can check work with terminal or browser.
+
+**Full Service:**
+
+```shell
+curl localhost:8080/FormalLanguageConstrainedPathQuerying/
+```
+
+```md
+http://localhost:<API_GATEWAY_PORT>/swagger/index.html
+```
+
+**Collector:**
+
+```shell
+grpcurl -plaintext \
+  -import-path ./proto -proto api/v1/service.proto \
+  -d '{"owner": "FormalLanguageConstrainedPathQuerying", "repo": "formal-lang-course"}' \
+  localhost:8081 collector.api.v1.InfoRepoService/GetInfoRepo
+```
+
+## Swagger Documentation
 
 Once the API Gateway is running, you can access the Swagger UI directly in your browser to test the API:
 
