@@ -4,6 +4,9 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"google.golang.org/grpc"
 
@@ -36,8 +39,18 @@ func main() {
 	)
 	pb.RegisterInfoRepoServiceServer(grpcServer, handler)
 
-	log.Printf("starting server on %s", listener.Addr())
-	if err := grpcServer.Serve(listener); err != nil {
-		log.Fatalf("failed to serve: %s", err)
-	}
+	go func() {
+		log.Printf("Starting server on %s...", listener.Addr())
+		if err := grpcServer.Serve(listener); err != nil {
+			log.Printf("failed to serve: %s", err)
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Println("Shutting down Collector gRPC server...")
+
+	grpcServer.GracefulStop()
+	log.Println("Collector server exited properly")
 }

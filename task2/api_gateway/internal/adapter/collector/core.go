@@ -3,7 +3,6 @@ package collector
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/Friend-zva/golang-course-task2/api_gateway/dto/driven"
@@ -16,34 +15,35 @@ import (
 )
 
 type CollectorAPI struct {
-	pb.InfoRepoServiceClient
-	address string
+	client pb.InfoRepoServiceClient
+	conn   *grpc.ClientConn
 }
 
-func NewCollectorAPI(address string) *CollectorAPI {
-	return &CollectorAPI{
-		address: address,
-	}
-}
-
-func (c *CollectorAPI) GetInfoRepo(ctx context.Context, input driven.CollectorInput) (domain.InfoRepo, error) {
-	conn, err := grpc.NewClient(c.address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+func NewCollectorAPI(address string) (*CollectorAPI, error) {
+	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		return domain.InfoRepo{}, domain.ErrInternal.Wrap(fmt.Errorf("failed to create connection: %w", err))
+		return nil, fmt.Errorf("failed to create connection: %w", err)
 	}
-	defer func() {
-		if err := conn.Close(); err != nil {
-			log.Printf("failed to close connection: %s", err)
-		}
-	}()
 
 	client := pb.NewInfoRepoServiceClient(conn)
 
+	return &CollectorAPI{
+		client: client,
+		conn:   conn,
+	}, nil
+}
+
+func (c *CollectorAPI) Close() error {
+	return c.conn.Close()
+}
+
+func (c *CollectorAPI) GetInfoRepo(ctx context.Context, input driven.CollectorInput) (domain.InfoRepo, error) {
 	req := pb.GetInfoRepoRequest{
 		Owner: input.Owner,
 		Repo:  input.Repo,
 	}
-	resp, err := client.GetInfoRepo(ctx, &req)
+
+	resp, err := c.client.GetInfoRepo(ctx, &req)
 	if err != nil {
 		st, ok := status.FromError(err)
 		if ok {

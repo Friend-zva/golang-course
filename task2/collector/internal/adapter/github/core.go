@@ -39,7 +39,7 @@ func (g *GitHubAPI) GetInfoRepo(ctx context.Context, input driven.GitHubRepoInpu
 	}
 	defer func() {
 		if err := resp.Body.Close(); err != nil {
-			log.Printf("failed to close body response: %s", err)
+			log.Printf("failed to close body response: %s\n", err)
 		}
 	}()
 
