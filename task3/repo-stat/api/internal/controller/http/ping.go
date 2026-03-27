@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
-	"repo-stat/api/internal/dto"
-	"repo-stat/api/internal/usecase"
+
+	"github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/dto"
+	"github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/usecase"
 )
 
 func NewPingHandler(log *slog.Logger, ping *usecase.Ping) http.HandlerFunc {

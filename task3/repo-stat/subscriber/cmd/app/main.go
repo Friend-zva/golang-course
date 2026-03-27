@@ -6,12 +6,13 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"repo-stat/platform/grpcserver"
-	"repo-stat/platform/logger"
-	subscriberpb "repo-stat/proto/subscriber"
-	"repo-stat/subscriber/config"
-	grpccontroller "repo-stat/subscriber/internal/controller/grpc"
-	"repo-stat/subscriber/internal/usecase"
+
+	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/grpcserver"
+	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/logger"
+	subscriberpb "github.com/Friend-zva/golang-course-task3/repo-stat/proto/subscriber"
+	"github.com/Friend-zva/golang-course-task3/repo-stat/subscriber/config"
+	grpccontroller "github.com/Friend-zva/golang-course-task3/repo-stat/subscriber/internal/controller/grpc"
+	"github.com/Friend-zva/golang-course-task3/repo-stat/subscriber/internal/usecase"
 )
 
 func run(ctx context.Context) error {

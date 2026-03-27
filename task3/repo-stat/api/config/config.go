@@ -1,9 +1,11 @@
 package config
 
 import (
-	"repo-stat/platform/env"
-	"repo-stat/platform/httpserver"
-	"repo-stat/platform/logger"
+	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/httpserver"
+
+	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/logger"
+
+	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/env"
 )
 
 type App struct {

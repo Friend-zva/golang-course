@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"repo-stat/api/config"
-	"repo-stat/api/internal/controller/http"
-	"repo-stat/platform/httpserver"
-	"repo-stat/platform/logger"
+
+	"github.com/Friend-zva/golang-course-task3/repo-stat/api/config"
+	"github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/controller/http"
+	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/httpserver"
+	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/logger"
 )
 
 func run(ctx context.Context) error {

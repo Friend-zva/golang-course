@@ -4,9 +4,10 @@ import (
 	"context"
 	"log/slog"
 	"net/http"
-	"repo-stat/api/config"
-	"repo-stat/api/internal/adapter/subscriber"
-	"repo-stat/api/internal/usecase"
+
+	"github.com/Friend-zva/golang-course-task3/repo-stat/api/config"
+	"github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/adapter/subscriber"
+	"github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/usecase"
 )
 
 func NewHandler(ctx context.Context, log *slog.Logger, cfg config.Config) (http.Handler, error) {

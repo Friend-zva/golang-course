@@ -3,7 +3,8 @@ package http
 import (
 	"log/slog"
 	"net/http"
-	"repo-stat/api/internal/usecase"
+
+	"github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/usecase"
 )
 
 func AddRoutes(mux *http.ServeMux, log *slog.Logger, ping *usecase.Ping) {

@@ -1,0 +1,9 @@
+env: "local"
+
+processor_server:
+  address: "localhost:8081"
+  timeout: 4s
+  idle_timeout: 60s
+
+collector_client:
+  address: "localhost:8082"

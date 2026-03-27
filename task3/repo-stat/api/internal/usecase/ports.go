@@ -2,7 +2,8 @@ package usecase
 
 import (
 	"context"
-	"repo-stat/api/internal/domain"
+
+	"github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/domain"
 )
 
 type SubscriberPinger interface {
