@@ -1,57 +1,71 @@
 package main
 
 import (
-	"log"
-	"net"
+	"context"
+	"flag"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
-	"syscall"
 
-	"google.golang.org/grpc"
-
-	grpcH "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/controller/grpc"
+	config "github.com/Friend-zva/golang-course-task3/repo-stat/collector/config"
+	github "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/adapter/github"
+	grpccontroller "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/controller/grpc"
+	usecase "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/usecase"
+	grpcserver "github.com/Friend-zva/golang-course-task3/repo-stat/platform/grpcserver"
+	logger "github.com/Friend-zva/golang-course-task3/repo-stat/platform/logger"
 	collectorpb "github.com/Friend-zva/golang-course-task3/repo-stat/proto/collector"
-
-	"github.com/Friend-zva/golang-course-task3/repo-stat/collector/config"
-	"github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/adapter/github"
-	"github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/usecase"
 )
 
-func main() {
-	cfg := config.MustLoad("config/config.yaml")
+func run(ctx context.Context) error {
+	// config
+	var configPath string
+	flag.StringVar(&configPath, "config", "config.yaml", "server configuration file")
+	flag.Parse()
+	cfg := config.MustLoad(configPath)
 
-	listener, err := net.Listen("tcp", cfg.CollectorServer.Address)
-	if err != nil {
-		log.Fatalf("failed to listen: %s", err)
-	}
+	// logger
+	log := logger.MustMakeLogger(cfg.Logger.LogLevel)
+	log.Info("starting server...")
+	log.Debug("debug messages are enabled")
 
+	// github client
 	httpClient := &http.Client{
-		Timeout: cfg.CollectorServer.Timeout,
+		Timeout: cfg.GRPC.Timeout,
 	}
-	clientGH := github.NewGitHubAPI(httpClient)
+	clientGH := github.NewClient(httpClient, log)
 
-	info := usecase.NewInfoRepo(clientGH)
+	// handler
+	getInfoRepo := usecase.NewGetInfoRepo(clientGH)
+	handler := grpccontroller.NewInfoRepoHandler(log, getInfoRepo)
 
-	handler := grpcH.NewHandler(info)
+	// server
+	server, err := grpcserver.New(cfg.GRPC.Address)
+	if err != nil {
+		return fmt.Errorf("cannot create grpc server: %w", err)
+	}
 
-	grpcServer := grpc.NewServer(
-		grpc.ConnectionTimeout(cfg.CollectorServer.IdleTimeout),
-	)
-	collectorpb.RegisterCollectorServer(grpcServer, handler)
+	collectorpb.RegisterCollectorServer(server.GRPC(), handler)
 
-	go func() {
-		log.Printf("Starting server on %s...", listener.Addr())
-		if err := grpcServer.Serve(listener); err != nil {
-			log.Printf("failed to serve: %s", err)
+	if err := server.Run(ctx); err != nil {
+		return fmt.Errorf("cannot run grpc server: %w", err)
+	}
+
+	return nil
+}
+
+func main() {
+	ctx := context.Background()
+	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)
+
+	if err := run(ctx); err != nil {
+		_, err = fmt.Fprintln(os.Stderr, err)
+		if err != nil {
+			fmt.Printf("cannot launch collector server: %s\n", err)
 		}
-	}()
+		cancel()
+		os.Exit(1)
+	}
 
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-	log.Println("Shutting down Collector gRPC server...")
-
-	grpcServer.GracefulStop()
-	log.Println("Collector server exited properly")
+	cancel()
 }

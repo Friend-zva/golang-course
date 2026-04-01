@@ -3,19 +3,33 @@ package usecase
 import (
 	"context"
 
-	"github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/dto/driven"
-	"github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/dto/driving"
+	domain "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/domain"
+	dto "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/dto"
 )
 
-func (iR *InfoRepo) GetInfoRepo(ctx context.Context, input driving.GetInfoRepoInput) (driving.GetInfoRepoOutput, error) {
-	inputGH := driven.GitHubRepoInput{Owner: input.Owner, Repo: input.Repo}
+type GitHub interface {
+	GetInfoRepo(ctx context.Context, input dto.GitHubGetInfoRepoInput) (domain.InfoRepo, error)
+}
 
-	info, err := iR.github.GetInfoRepo(ctx, inputGH)
+type GetInfoRepo struct {
+	github GitHub
+}
+
+func NewGetInfoRepo(github GitHub) *GetInfoRepo {
+	return &GetInfoRepo{
+		github: github,
+	}
+}
+
+func (gIR *GetInfoRepo) Execute(ctx context.Context, input dto.GetInfoRepoInput) (dto.GetInfoRepoOutput, error) {
+	inputGH := dto.GitHubGetInfoRepoInput(input)
+
+	info, err := gIR.github.GetInfoRepo(ctx, inputGH)
 	if err != nil {
-		return driving.GetInfoRepoOutput{}, err
+		return dto.GetInfoRepoOutput{}, err
 	}
 
-	return driving.GetInfoRepoOutput{
+	return dto.GetInfoRepoOutput{
 		InfoRepo: info,
 	}, nil
 }

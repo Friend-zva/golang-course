@@ -5,41 +5,49 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"net/http"
+	"time"
 
-	"github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/domain"
-	"github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/dto/driven"
+	domain "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/domain"
+	dto "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/dto"
 )
 
-type GitHubAPI struct {
+type Client struct {
+	log    *slog.Logger
 	client *http.Client
 }
 
-func NewGitHubAPI(client *http.Client) *GitHubAPI {
-	if client == nil {
-		client = http.DefaultClient
-	}
-	return &GitHubAPI{
+func NewClient(client *http.Client, log *slog.Logger) *Client {
+	return &Client{
+		log:    log,
 		client: client,
 	}
 }
 
-func (g *GitHubAPI) GetInfoRepo(ctx context.Context, input driven.GitHubRepoInput) (domain.InfoRepo, error) {
+type githubGetInfoRepoOutput struct {
+	Name            string    `json:"name"`
+	Description     string    `json:"description"`
+	DateCreation    time.Time `json:"created_at"`
+	CountStargazers int       `json:"stargazers_count"`
+	CountForks      int       `json:"forks"`
+}
+
+func (c *Client) GetInfoRepo(ctx context.Context, input dto.GitHubGetInfoRepoInput) (domain.InfoRepo, error) {
 	url := fmt.Sprintf("https://api.github.com/repos/%s/%s", input.Owner, input.Repo)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return domain.InfoRepo{}, domain.ErrInternal.Wrap(fmt.Errorf("failed to create request: %w", err))
+		return domain.InfoRepo{}, domain.ErrInternal.Wrap(fmt.Errorf("cannot create request: %w", err))
 	}
 
-	resp, err := g.client.Do(req)
+	resp, err := c.client.Do(req)
 	if err != nil {
 		return domain.InfoRepo{}, domain.ErrExternal.Wrap(err)
 	}
 	defer func() {
 		if err := resp.Body.Close(); err != nil {
-			log.Printf("failed to close body response: %s", err)
+			c.log.Warn("cannot close body response", "error", err)
 		}
 	}()
 
@@ -55,13 +63,13 @@ func (g *GitHubAPI) GetInfoRepo(ctx context.Context, input driven.GitHubRepoInpu
 	body, err := io.ReadAll(resp.Body)
 
 	if err != nil {
-		return domain.InfoRepo{}, domain.ErrInternal.Wrap(fmt.Errorf("failed to read body response: %w", err))
+		return domain.InfoRepo{}, domain.ErrInternal.Wrap(fmt.Errorf("cannot read body response: %w", err))
 	}
 
-	output := driven.GitHubRepoOutput{}
+	output := githubGetInfoRepoOutput{}
 	err = json.Unmarshal(body, &output)
 	if err != nil {
-		return domain.InfoRepo{}, domain.ErrInternal.Wrap(fmt.Errorf("failed to serialize data: %w", err))
+		return domain.InfoRepo{}, domain.ErrInternal.Wrap(fmt.Errorf("cannot serialize data: %w", err))
 	}
 
 	return domain.InfoRepo{
