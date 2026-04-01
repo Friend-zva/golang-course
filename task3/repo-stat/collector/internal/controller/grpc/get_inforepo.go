@@ -2,15 +2,12 @@ package grpc
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 
-	domain "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/domain"
 	dto "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/dto"
+	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/apperror"
 	collectorpb "github.com/Friend-zva/golang-course-task3/repo-stat/proto/collector"
 )
 
@@ -39,20 +36,7 @@ func (iRH *InfoRepoHandler) GetInfoRepo(ctx context.Context, req *collectorpb.Ge
 
 	output, err := iRH.usecase.Execute(ctx, input)
 	if err != nil {
-		var appErr *domain.AppError
-		if errors.As(err, &appErr) {
-			grpcCode := codes.Internal
-			switch appErr.Code {
-			case domain.RepoNotFound:
-				grpcCode = codes.NotFound
-			case domain.CodeInternal:
-				grpcCode = codes.Internal
-			case domain.CodeExternal:
-				grpcCode = codes.Unavailable
-			}
-			return nil, status.Error(grpcCode, appErr.Message)
-		}
-		return nil, status.Error(codes.Internal, "internal server error")
+		return nil, apperror.Pack(err)
 	}
 
 	return &collectorpb.GetInfoRepoResponse{

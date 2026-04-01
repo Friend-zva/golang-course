@@ -1,12 +1,12 @@
 package http
 
 import (
-	"encoding/json"
 	"log/slog"
 	"net/http"
 
 	domain "github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/domain"
 	dto "github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/dto"
+	pkg "github.com/Friend-zva/golang-course-task3/repo-stat/api/pkg"
 )
 
 type PingHandler struct {
@@ -47,10 +47,5 @@ func (pH *PingHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		statusCode = http.StatusServiceUnavailable
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(statusCode)
-
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		pH.log.Error("cannot write ping response", "error", err)
-	}
+	pkg.WriteJSON(*pH.log, w, statusCode, response)
 }

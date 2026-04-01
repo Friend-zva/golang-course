@@ -25,7 +25,7 @@ func run(ctx context.Context) error {
 
 	// logger
 	log := logger.MustMakeLogger(cfg.Logger.LogLevel)
-	log.Info("starting server...")
+	log.Info("starting processor server...")
 	log.Debug("debug messages are enabled")
 
 	// collector client
@@ -66,7 +66,7 @@ func main() {
 	if err := run(ctx); err != nil {
 		_, err = fmt.Fprintln(os.Stderr, err)
 		if err != nil {
-			fmt.Printf("cannot launch processor server: %s\n", err)
+			fmt.Printf("cannot launch processor server: %v\n", err)
 		}
 		cancel()
 		os.Exit(1)

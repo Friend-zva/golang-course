@@ -11,6 +11,7 @@ import (
 
 	domain "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/domain"
 	dto "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/dto"
+	apperror "github.com/Friend-zva/golang-course-task3/repo-stat/platform/apperror"
 )
 
 type Client struct {
@@ -38,12 +39,14 @@ func (c *Client) GetInfoRepo(ctx context.Context, input dto.GitHubGetInfoRepoInp
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return domain.InfoRepo{}, domain.ErrInternal.Wrap(fmt.Errorf("cannot create request: %w", err))
+		err = fmt.Errorf("cannot create request: %w", err)
+		return domain.InfoRepo{}, apperror.ErrInternal.Wrap(err)
 	}
 
 	resp, err := c.client.Do(req)
 	if err != nil {
-		return domain.InfoRepo{}, domain.ErrExternal.Wrap(err)
+		err = fmt.Errorf("cannot do request: %w", err)
+		return domain.InfoRepo{}, apperror.ErrExternal.Wrap(err)
 	}
 	defer func() {
 		if err := resp.Body.Close(); err != nil {
@@ -55,21 +58,25 @@ func (c *Client) GetInfoRepo(ctx context.Context, input dto.GitHubGetInfoRepoInp
 	case http.StatusOK:
 		break
 	case http.StatusNotFound:
-		return domain.InfoRepo{}, domain.ErrNotFound.WithMessage(fmt.Sprintf("repo '%s' not found", input.Repo))
+		mes := fmt.Sprintf("repo '%s' not found", input.Repo)
+		return domain.InfoRepo{}, apperror.ErrNotFound.WithMessage(mes)
 	default:
-		return domain.InfoRepo{}, domain.ErrExternal.WithMessage(fmt.Sprintf("github api returned status: %s", resp.Status))
+		mes := fmt.Sprintf("github api returned status: %s", resp.Status)
+		return domain.InfoRepo{}, apperror.ErrExternal.WithMessage(mes)
 	}
 
 	body, err := io.ReadAll(resp.Body)
 
 	if err != nil {
-		return domain.InfoRepo{}, domain.ErrInternal.Wrap(fmt.Errorf("cannot read body response: %w", err))
+		err = fmt.Errorf("cannot read body response: %w", err)
+		return domain.InfoRepo{}, apperror.ErrInternal.Wrap(err)
 	}
 
 	output := githubGetInfoRepoOutput{}
 	err = json.Unmarshal(body, &output)
 	if err != nil {
-		return domain.InfoRepo{}, domain.ErrInternal.Wrap(fmt.Errorf("cannot serialize data: %w", err))
+		err = fmt.Errorf("cannot serialize data: %w", err)
+		return domain.InfoRepo{}, apperror.ErrInternal.Wrap(err)
 	}
 
 	return domain.InfoRepo{

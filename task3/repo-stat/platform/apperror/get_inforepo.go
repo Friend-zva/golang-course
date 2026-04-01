@@ -1,40 +1,28 @@
-package domain
+package apperror
 
 import (
 	"fmt"
-)
-
-type AppStatus int
-
-const (
-	CodeNotFound AppStatus = 404
-	CodeInternal AppStatus = 500
-	CodeGateway  AppStatus = 502
-	CodeTimeout  AppStatus = 504
+	"net/http"
 )
 
 type AppError struct {
-	Code    AppStatus
+	Code    int
 	Message string
 	Err     error
 }
 
 var (
 	ErrNotFound = &AppError{
-		Code:    CodeNotFound,
+		Code:    http.StatusNotFound,
 		Message: "resource not found",
 	}
 	ErrInternal = &AppError{
-		Code:    CodeInternal,
+		Code:    http.StatusInternalServerError,
 		Message: "internal server error",
 	}
-	ErrGateway = &AppError{
-		Code:    CodeGateway,
-		Message: "bad gateway: external service error",
-	}
-	ErrTimeout = &AppError{
-		Code:    CodeTimeout,
-		Message: "gateway timeout: external service took too long",
+	ErrExternal = &AppError{
+		Code:    http.StatusBadGateway,
+		Message: "external service error",
 	}
 )
 

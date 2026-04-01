@@ -5,10 +5,9 @@ import (
 	"log/slog"
 
 	grpc "google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
 	insecure "google.golang.org/grpc/credentials/insecure"
-	status "google.golang.org/grpc/status"
 
+	apperror "github.com/Friend-zva/golang-course-task3/repo-stat/platform/apperror"
 	domain "github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/domain"
 	dto "github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/dto"
 	collectorpb "github.com/Friend-zva/golang-course-task3/repo-stat/proto/collector"
@@ -44,18 +43,7 @@ func (c *Client) GetInfoRepo(ctx context.Context, input dto.CollectorGetInfoRepo
 
 	resp, err := c.pb.GetInfoRepo(ctx, &req)
 	if err != nil {
-		st, ok := status.FromError(err)
-		if ok {
-			switch st.Code() {
-			case codes.NotFound:
-				return domain.InfoRepo{}, domain.ErrNotFound.WithMessage(st.Message())
-			case codes.Unavailable:
-				return domain.InfoRepo{}, domain.ErrGateway.WithMessage(st.Message())
-			case codes.DeadlineExceeded:
-				return domain.InfoRepo{}, domain.ErrTimeout.WithMessage(st.Message())
-			}
-		}
-		return domain.InfoRepo{}, domain.ErrInternal.Wrap(err)
+		return domain.InfoRepo{}, apperror.Unpack(err)
 	}
 
 	return domain.InfoRepo{

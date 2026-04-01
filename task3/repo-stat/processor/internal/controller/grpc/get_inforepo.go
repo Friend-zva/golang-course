@@ -2,16 +2,12 @@ package grpc
 
 import (
 	"context"
-	"errors"
 	"time"
 
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
-	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
-
-	domain "github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/domain"
+	apperror "github.com/Friend-zva/golang-course-task3/repo-stat/platform/apperror"
 	dto "github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/dto"
 	processorpb "github.com/Friend-zva/golang-course-task3/repo-stat/proto/processor"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (h *Handler) GetInfoRepo(ctx context.Context, req *processorpb.GetInfoRepoRequest) (*processorpb.GetInfoRepoResponse, error) {
@@ -22,20 +18,7 @@ func (h *Handler) GetInfoRepo(ctx context.Context, req *processorpb.GetInfoRepoR
 
 	output, err := h.getInfoRepo.Execute(ctx, input)
 	if err != nil {
-		var appErr *domain.AppError
-		if errors.As(err, &appErr) {
-			grpcCode := codes.Internal
-			switch appErr.Code {
-			case domain.CodeNotFound:
-				grpcCode = codes.NotFound
-			case domain.CodeInternal:
-				grpcCode = codes.Internal
-			case domain.CodeGateway:
-				grpcCode = codes.Unavailable
-			}
-			return nil, status.Error(grpcCode, appErr.Message)
-		}
-		return nil, status.Error(codes.Internal, "internal server error")
+		return nil, apperror.Pack(err)
 	}
 
 	return &processorpb.GetInfoRepoResponse{

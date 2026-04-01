@@ -26,7 +26,7 @@ func run(ctx context.Context) error {
 
 	// logger
 	log := logger.MustMakeLogger(cfg.Logger.LogLevel)
-	log.Info("starting server...")
+	log.Info("starting collector server...")
 	log.Debug("debug messages are enabled")
 
 	// github client
@@ -61,7 +61,7 @@ func main() {
 	if err := run(ctx); err != nil {
 		_, err = fmt.Fprintln(os.Stderr, err)
 		if err != nil {
-			fmt.Printf("cannot launch collector server: %s\n", err)
+			fmt.Printf("cannot launch collector server: %v\n", err)
 		}
 		cancel()
 		os.Exit(1)

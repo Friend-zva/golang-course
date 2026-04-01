@@ -25,7 +25,7 @@ func run(ctx context.Context) error {
 
 	// logger
 	log := logger.MustMakeLogger(cfg.Logger.LogLevel)
-	log.Info("starting server...")
+	log.Info("starting api server...")
 	log.Debug("debug messages are enabled")
 
 	// subscriber client
@@ -72,7 +72,7 @@ func main() {
 	if err := run(ctx); err != nil {
 		_, err = fmt.Fprintln(os.Stderr, err)
 		if err != nil {
-			fmt.Printf("cannot launch api server: %s\n", err)
+			fmt.Printf("cannot launch api server: %v\n", err)
 		}
 		cancel()
 		os.Exit(1)

@@ -1,12 +1,13 @@
 package http
 
 import (
-	"encoding/json"
+	"errors"
 	"log/slog"
 	"net/http"
 
 	dto "github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/dto"
 	pkg "github.com/Friend-zva/golang-course-task3/repo-stat/api/pkg"
+	apperror "github.com/Friend-zva/golang-course-task3/repo-stat/platform/apperror"
 )
 
 type ErrorResponse struct {
@@ -30,7 +31,8 @@ func (iRH *InfoRepoHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	owner, repo, err := pkg.ExtractPath(url)
 	if err != nil {
-		http.Error(w, "invalid url format", http.StatusBadRequest)
+		errResp := ErrorResponse{"invalid url format"}
+		pkg.WriteJSON(*iRH.log, w, http.StatusBadRequest, errResp)
 		return
 	}
 
@@ -41,14 +43,16 @@ func (iRH *InfoRepoHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	output, err := iRH.usecase.Execute(r.Context(), input)
 	if err != nil {
-		iRH.log.Error("cannot get info repo", "error", err)
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+		var errApp *apperror.AppError
+		if !errors.As(err, &errApp) {
+			errApp = apperror.ErrInternal.Wrap(err)
+		}
+
+		errResp := ErrorResponse{errApp.Message}
+		iRH.log.Error("cannot get inforepo", "error", errApp.Error())
+		pkg.WriteJSON(*iRH.log, w, errApp.Code, errResp)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-
-	if err := json.NewEncoder(w).Encode(output); err != nil {
-		iRH.log.Error("cannot encode inforepo response", "error", err)
-	}
+	pkg.WriteJSON(*iRH.log, w, http.StatusOK, output)
 }

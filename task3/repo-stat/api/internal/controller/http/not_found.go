@@ -1,22 +1,17 @@
 package http
 
 import (
-	"encoding/json"
 	"log/slog"
 	"net/http"
+
+	pkg "github.com/Friend-zva/golang-course-task3/repo-stat/api/pkg"
 )
 
 func NotFoundHandler(log *slog.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusNotFound)
-
 		errResp := ErrorResponse{
-			Error: "Endpoint not found. Check /swagger/index.html for available routes",
+			"Endpoint not found. Check /swagger/index.html for available routes",
 		}
-
-		if err := json.NewEncoder(w).Encode(errResp); err != nil {
-			log.Error("cannot encode not found response", "error", err)
-		}
+		pkg.WriteJSON(*log, w, http.StatusNotFound, errResp)
 	}
 }
