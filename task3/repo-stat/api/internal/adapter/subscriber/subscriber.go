@@ -4,12 +4,11 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/domain"
-
-	subscirberpb "github.com/Friend-zva/golang-course-task3/repo-stat/proto/subscriber"
-
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	domain "github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/domain"
+	subscirberpb "github.com/Friend-zva/golang-course-task3/repo-stat/proto/subscriber"
 )
 
 type Client struct {
@@ -37,7 +36,7 @@ func NewClient(address string, log *slog.Logger) (*Client, error) {
 func (c *Client) Ping(ctx context.Context) domain.PingStatus {
 	_, err := c.pb.Ping(ctx, &subscirberpb.PingRequest{})
 	if err != nil {
-		c.log.Error("subscriber ping failed", "error", err)
+		c.log.Error("cannot ping subscriber", "error", err)
 		return domain.PingStatusDown
 	}
 

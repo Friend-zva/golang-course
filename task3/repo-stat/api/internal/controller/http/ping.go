@@ -5,23 +5,52 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/dto"
-	"github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/usecase"
+	domain "github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/domain"
+	dto "github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/dto"
 )
 
-func NewPingHandler(log *slog.Logger, ping *usecase.Ping) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		status := ping.Execute(r.Context())
+type PingHandler struct {
+	log            *slog.Logger
+	subscriberPing ServicePing
+	processorPing  ServicePing
+}
 
-		response := dto.PingResponse{
-			Reply: string(status),
-		}
+func NewPingHandler(log *slog.Logger, sub ServicePing, proc ServicePing) *PingHandler {
+	return &PingHandler{
+		log:            log,
+		subscriberPing: sub,
+		processorPing:  proc,
+	}
+}
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
+func (pH *PingHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	subStatus := pH.subscriberPing.Execute(r.Context())
+	procStatus := pH.processorPing.Execute(r.Context())
 
-		if err := json.NewEncoder(w).Encode(response); err != nil {
-			log.Error("failed to write ping response", "error", err)
-		}
+	response := dto.PingResponse{
+		Status: "ok",
+		Services: []dto.ServiceStatus{
+			{
+				Name:   "processor",
+				Status: string(procStatus),
+			},
+			{
+				Name:   "subscriber",
+				Status: string(subStatus),
+			},
+		},
+	}
+
+	statusCode := http.StatusOK
+	if subStatus != domain.PingStatusUp || procStatus != domain.PingStatusUp {
+		response.Status = "degraded"
+		statusCode = http.StatusServiceUnavailable
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		pH.log.Error("cannot write ping response", "error", err)
 	}
 }
