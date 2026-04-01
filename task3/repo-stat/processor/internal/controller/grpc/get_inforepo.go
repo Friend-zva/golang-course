@@ -9,19 +9,18 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
+	domain "github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/domain"
+	dto "github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/dto"
 	processorpb "github.com/Friend-zva/golang-course-task3/repo-stat/proto/processor"
-
-	"github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/domain"
-	"github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/dto/driving"
 )
 
 func (h *Handler) GetInfoRepo(ctx context.Context, req *processorpb.GetInfoRepoRequest) (*processorpb.GetInfoRepoResponse, error) {
-	input := driving.GetInfoRepoInput{
+	input := dto.GetInfoRepoInput{
 		Owner: req.Owner,
 		Repo:  req.Repo,
 	}
 
-	output, err := h.infoRepo.GetInfoRepo(ctx, input)
+	output, err := h.getInfoRepo.Execute(ctx, input)
 	if err != nil {
 		var appErr *domain.AppError
 		if errors.As(err, &appErr) {

@@ -1,4 +1,4 @@
-package driving
+package dto
 
 import "time"
 
@@ -13,4 +13,9 @@ type GetInfoRepoOutput struct {
 	DateCreation    time.Time
 	CountStargazers int
 	CountForks      int
+}
+
+type CollectorGetInfoRepoInput struct {
+	Owner string
+	Repo  string
 }

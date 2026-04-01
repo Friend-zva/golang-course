@@ -2,49 +2,47 @@ package collector
 
 import (
 	"context"
-	"fmt"
+	"log/slog"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
+	domain "github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/domain"
+	dto "github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/dto"
 	collectorpb "github.com/Friend-zva/golang-course-task3/repo-stat/proto/collector"
-
-	"github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/domain"
-	"github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/dto/driven"
 )
 
-type CollectorAPI struct {
-	client collectorpb.CollectorClient
-	conn   *grpc.ClientConn
+type Client struct {
+	log  *slog.Logger
+	conn *grpc.ClientConn
+	pb   collectorpb.CollectorClient
 }
 
-func NewCollectorAPI(address string) (*CollectorAPI, error) {
-	conn, err := grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+func NewClient(address string, log *slog.Logger) (*Client, error) {
+	conn, err := grpc.NewClient(
+		address,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create connection: %w", err)
+		return nil, err
 	}
 
-	client := collectorpb.NewCollectorClient(conn)
-
-	return &CollectorAPI{
-		client: client,
-		conn:   conn,
+	return &Client{
+		log:  log,
+		conn: conn,
+		pb:   collectorpb.NewCollectorClient(conn),
 	}, nil
 }
 
-func (c *CollectorAPI) Close() error {
-	return c.conn.Close()
-}
-
-func (c *CollectorAPI) GetInfoRepo(ctx context.Context, input driven.CollectorInput) (domain.InfoRepo, error) {
+func (c *Client) GetInfoRepo(ctx context.Context, input dto.CollectorGetInfoRepoInput) (domain.InfoRepo, error) {
 	req := collectorpb.GetInfoRepoRequest{
 		Owner: input.Owner,
 		Repo:  input.Repo,
 	}
 
-	resp, err := c.client.GetInfoRepo(ctx, &req)
+	resp, err := c.pb.GetInfoRepo(ctx, &req)
 	if err != nil {
 		st, ok := status.FromError(err)
 		if ok {
@@ -67,4 +65,8 @@ func (c *CollectorAPI) GetInfoRepo(ctx context.Context, input driven.CollectorIn
 		CountStargazers: int(resp.CountStargazers),
 		CountForks:      int(resp.CountForks),
 	}, nil
+}
+
+func (c *Client) Close() error {
+	return c.conn.Close()
 }
