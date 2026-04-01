@@ -3,7 +3,7 @@ app:
 
 http:
   address: "localhost:8080"
-  timeout_sec: "5"
+  timeout_sec: 5
 
 logger:
   log_level: "DEBUG"

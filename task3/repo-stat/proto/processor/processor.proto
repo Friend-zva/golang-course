@@ -9,6 +9,7 @@ option go_package = "github.com/Friend-zva/golang-course-task3/processor/v1;proc
 service Processor {
   rpc GetInfoRepo(GetInfoRepoRequest) returns (GetInfoRepoResponse) {
   }
+  rpc Ping(PingRequest) returns (PingResponse);
 }
 
 message GetInfoRepoRequest {
@@ -22,4 +23,11 @@ message GetInfoRepoResponse {
   google.protobuf.Timestamp date_creation    = 3 [ json_name = "date_creation" ];
   int32                     count_stargazers = 4 [ json_name = "count_stargazers" ];
   int32                     count_forks      = 5 [ json_name = "count_forks" ];
+}
+
+message PingRequest {
+}
+
+message PingResponse {
+  string reply = 1;
 }

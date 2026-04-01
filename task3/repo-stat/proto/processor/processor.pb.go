@@ -150,6 +150,86 @@ func (x *GetInfoRepoResponse) GetCountForks() int32 {
 	return 0
 }
 
+type PingRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PingRequest) Reset() {
+	*x = PingRequest{}
+	mi := &file_processor_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PingRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PingRequest) ProtoMessage() {}
+
+func (x *PingRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_processor_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PingRequest.ProtoReflect.Descriptor instead.
+func (*PingRequest) Descriptor() ([]byte, []int) {
+	return file_processor_proto_rawDescGZIP(), []int{2}
+}
+
+type PingResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Reply         string                 `protobuf:"bytes,1,opt,name=reply,proto3" json:"reply,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PingResponse) Reset() {
+	*x = PingResponse{}
+	mi := &file_processor_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PingResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PingResponse) ProtoMessage() {}
+
+func (x *PingResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_processor_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PingResponse.ProtoReflect.Descriptor instead.
+func (*PingResponse) Descriptor() ([]byte, []int) {
+	return file_processor_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *PingResponse) GetReply() string {
+	if x != nil {
+		return x.Reply
+	}
+	return ""
+}
+
 var File_processor_proto protoreflect.FileDescriptor
 
 const file_processor_proto_rawDesc = "" +
@@ -163,9 +243,13 @@ const file_processor_proto_rawDesc = "" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\x12@\n" +
 	"\rdate_creation\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\rdate_creation\x12*\n" +
 	"\x10count_stargazers\x18\x04 \x01(\x05R\x10count_stargazers\x12 \n" +
-	"\vcount_forks\x18\x05 \x01(\x05R\vcount_forks2a\n" +
+	"\vcount_forks\x18\x05 \x01(\x05R\vcount_forks\"\r\n" +
+	"\vPingRequest\"$\n" +
+	"\fPingResponse\x12\x14\n" +
+	"\x05reply\x18\x01 \x01(\tR\x05reply2\xa0\x01\n" +
 	"\tProcessor\x12T\n" +
-	"\vGetInfoRepo\x12 .processor.v1.GetInfoRepoRequest\x1a!.processor.v1.GetInfoRepoResponse\"\x00BDZBgithub.com/Friend-zva/golang-course-task3/processor/v1;processorv1b\x06proto3"
+	"\vGetInfoRepo\x12 .processor.v1.GetInfoRepoRequest\x1a!.processor.v1.GetInfoRepoResponse\"\x00\x12=\n" +
+	"\x04Ping\x12\x19.processor.v1.PingRequest\x1a\x1a.processor.v1.PingResponseBDZBgithub.com/Friend-zva/golang-course-task3/processor/v1;processorv1b\x06proto3"
 
 var (
 	file_processor_proto_rawDescOnce sync.Once
@@ -179,18 +263,22 @@ func file_processor_proto_rawDescGZIP() []byte {
 	return file_processor_proto_rawDescData
 }
 
-var file_processor_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_processor_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_processor_proto_goTypes = []any{
 	(*GetInfoRepoRequest)(nil),    // 0: processor.v1.GetInfoRepoRequest
 	(*GetInfoRepoResponse)(nil),   // 1: processor.v1.GetInfoRepoResponse
-	(*timestamppb.Timestamp)(nil), // 2: google.protobuf.Timestamp
+	(*PingRequest)(nil),           // 2: processor.v1.PingRequest
+	(*PingResponse)(nil),          // 3: processor.v1.PingResponse
+	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
 }
 var file_processor_proto_depIdxs = []int32{
-	2, // 0: processor.v1.GetInfoRepoResponse.date_creation:type_name -> google.protobuf.Timestamp
+	4, // 0: processor.v1.GetInfoRepoResponse.date_creation:type_name -> google.protobuf.Timestamp
 	0, // 1: processor.v1.Processor.GetInfoRepo:input_type -> processor.v1.GetInfoRepoRequest
-	1, // 2: processor.v1.Processor.GetInfoRepo:output_type -> processor.v1.GetInfoRepoResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
+	2, // 2: processor.v1.Processor.Ping:input_type -> processor.v1.PingRequest
+	1, // 3: processor.v1.Processor.GetInfoRepo:output_type -> processor.v1.GetInfoRepoResponse
+	3, // 4: processor.v1.Processor.Ping:output_type -> processor.v1.PingResponse
+	3, // [3:5] is the sub-list for method output_type
+	1, // [1:3] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -207,7 +295,7 @@ func file_processor_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_processor_proto_rawDesc), len(file_processor_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

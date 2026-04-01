@@ -4,10 +4,10 @@ import (
 	"context"
 	"log/slog"
 
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/status"
+	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	insecure "google.golang.org/grpc/credentials/insecure"
+	status "google.golang.org/grpc/status"
 
 	domain "github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/domain"
 	dto "github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/dto"

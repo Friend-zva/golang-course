@@ -5,8 +5,7 @@ import (
 	"log/slog"
 
 	subscriberpb "github.com/Friend-zva/golang-course-task3/repo-stat/proto/subscriber"
-
-	"github.com/Friend-zva/golang-course-task3/repo-stat/subscriber/internal/usecase"
+	usecase "github.com/Friend-zva/golang-course-task3/repo-stat/subscriber/internal/usecase"
 )
 
 type Server struct {
@@ -23,7 +22,7 @@ func NewServer(log *slog.Logger, ping *usecase.Ping) *Server {
 }
 
 func (s *Server) Ping(ctx context.Context, _ *subscriberpb.PingRequest) (*subscriberpb.PingResponse, error) {
-	s.log.Debug("subscriberp ping request received")
+	s.log.Debug("subscriber ping request received")
 
 	return &subscriberpb.PingResponse{
 		Reply: s.ping.Execute(ctx),

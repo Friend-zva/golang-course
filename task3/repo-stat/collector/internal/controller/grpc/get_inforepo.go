@@ -5,9 +5,9 @@ import (
 	"errors"
 	"log/slog"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/types/known/timestamppb"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 
 	domain "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/domain"
 	dto "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/dto"

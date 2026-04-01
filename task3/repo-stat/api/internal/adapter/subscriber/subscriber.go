@@ -4,8 +4,8 @@ import (
 	"context"
 	"log/slog"
 
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	grpc "google.golang.org/grpc"
+	insecure "google.golang.org/grpc/credentials/insecure"
 
 	domain "github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/domain"
 	subscirberpb "github.com/Friend-zva/golang-course-task3/repo-stat/proto/subscriber"

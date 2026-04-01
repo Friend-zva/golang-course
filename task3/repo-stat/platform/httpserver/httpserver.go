@@ -8,8 +8,9 @@ import (
 )
 
 type Config struct {
-	Address string        `yaml:"address" env:"LISTEN_ADDRESS" env-default:"localhost:8080"`
-	Timeout time.Duration `yaml:"timeout" env:"TIMEOUT" env-default:"5s"`
+	Address    string `yaml:"address" env:"LISTEN_ADDRESS" env-default:"localhost:8080"`
+	TimeoutSec int    `yaml:"timeout_sec" env:"TIMEOUT_SEC" env-default:"5"`
+	Timeout    time.Duration
 }
 
 type Server struct {
