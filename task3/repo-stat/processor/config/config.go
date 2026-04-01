@@ -1,39 +1,28 @@
 package config
 
 import (
-	"log"
-	"os"
-	"time"
-
-	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/env"
+	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/grpcserver"
+	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/logger"
 )
 
+type App struct {
+	AppName string `yaml:"app_name" env:"APP_NAME" env-default:"repo-stat-processor"`
+}
+
+type Services struct {
+	Collector string `yaml:"collector" env:"COLLECTOR_ADDRESS" env-default:"localhost:8083"`
+}
+
 type Config struct {
-	Env             string          `yaml:"env" env-default:"local"`
-	ProcessorServer ProcessorConfig `yaml:"processor_server"`
-	CollectorClient CollectorConfig `yaml:"collector_client"`
+	App      App               `yaml:"app"`
+	Services Services          `yaml:"services"`
+	GRPC     grpcserver.Config `yaml:"grpc"`
+	Logger   logger.Config     `yaml:"logger"`
 }
 
-type ProcessorConfig struct {
-	Address     string        `yaml:"address" env:"PROCESSOR_SERVER_ADDRESS" env-default:"localhost:8081"`
-	Timeout     time.Duration `yaml:"timeout" env-default:"4s"`
-	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"60s"`
-}
-
-type CollectorConfig struct {
-	Address string `yaml:"address" env:"COLLECTOR_CLIENT_ADDRESS" env-default:"localhost:8082"`
-}
-
-func MustLoad(pathConfig string) *Config {
-	if _, err := os.Stat(pathConfig); os.IsNotExist(err) {
-		log.Fatalf("Failed to find config file (%s)", pathConfig)
-	}
-
+func MustLoad(path string) Config {
 	var cfg Config
-
-	if err := cleanenv.ReadConfig(pathConfig, &cfg); err != nil {
-		log.Fatalf("Failed to read config (%s)", err)
-	}
-
-	return &cfg
+	env.MustLoad(path, &cfg)
+	return cfg
 }

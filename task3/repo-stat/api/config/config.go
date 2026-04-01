@@ -1,11 +1,9 @@
 package config
 
 import (
-	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/httpserver"
-
-	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/logger"
-
 	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/env"
+	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/httpserver"
+	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/logger"
 )
 
 type App struct {
@@ -14,6 +12,7 @@ type App struct {
 
 type Services struct {
 	Subscriber string `yaml:"subscriber" env:"SUBSCRIBER_ADDRESS" env-default:"localhost:8081"`
+	Processor  string `yaml:"processor" env:"PROCESSOR_ADDRESS" env-default:"localhost:8082"`
 }
 
 type Config struct {

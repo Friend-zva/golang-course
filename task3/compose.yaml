@@ -13,8 +13,10 @@ services:
     environment:
       - LISTEN_ADDRESS=:8080
       - SUBSCRIBER_ADDRESS=subscriber:8080
+      - PROCESSOR_ADDRESS=processor:8080
     depends_on:
       - subscriber
+      - processor
 
   subscriber:
     image: subscriber:latest
@@ -30,39 +32,6 @@ services:
     environment:
       - LISTEN_ADDRESS=:8080
       - API_ADDRESS=api:8080
-  tests:
-    image: tests:latest
-    build:
-      context: tests
-    container_name: tests
-    restart: "no"
-    depends_on:
-      - api
-    entrypoint: ["true"]
-
-  collector:
-    image: collector:latest
-    build:
-      context: repo-stat
-      dockerfile: Dockerfile.collector
-    container_name: collector
-    restart: unless-stopped
-    ports:
-      - 28082:8080
-    volumes:
-      - ./repo-stat/collector/config/config.yaml:/config.yaml
-    environment:
-      - LISTEN_ADDRESS=:8080
-      - API_ADDRESS=api:8080
-  tests:
-    image: tests:latest
-    build:
-      context: tests
-    container_name: tests
-    restart: "no"
-    depends_on:
-      - api
-    entrypoint: ["true"]
 
   processor:
     image: processor:latest
@@ -77,7 +46,24 @@ services:
       - ./repo-stat/processor/config/config.yaml:/config.yaml
     environment:
       - LISTEN_ADDRESS=:8080
-      - API_ADDRESS=api:8080
+      - COLLECTOR_ADDRESS=collector:8080
+    depends_on:
+      - collector
+
+  collector:
+    image: collector:latest
+    build:
+      context: repo-stat
+      dockerfile: Dockerfile.collector
+    container_name: collector
+    restart: unless-stopped
+    ports:
+      - 28082:8080
+    volumes:
+      - ./repo-stat/collector/config/config.yaml:/config.yaml
+    environment:
+      - LISTEN_ADDRESS=:8080
+
   tests:
     image: tests:latest
     build:
