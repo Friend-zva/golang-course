@@ -33,7 +33,7 @@ func (gIR *GetInfoRepo) Execute(ctx context.Context, input dto.GetInfoRepoInput)
 	return dto.GetInfoRepoOutput{
 		Name:            info.Name,
 		Description:     info.Description,
-		DateCreation:    info.DateCreation.Format(time.RFC1123),
+		DateCreation:    info.DateCreation.Format(time.RFC3339),
 		CountStargazers: info.CountStargazers,
 		CountForks:      info.CountForks,
 	}, nil

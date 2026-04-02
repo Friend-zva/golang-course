@@ -27,7 +27,7 @@ func NewClient(client *http.Client, log *slog.Logger) *Client {
 }
 
 type githubGetInfoRepoOutput struct {
-	Name            string    `json:"name"`
+	Name            string    `json:"full_name"`
 	Description     string    `json:"description"`
 	DateCreation    time.Time `json:"created_at"`
 	CountStargazers int       `json:"stargazers_count"`
