@@ -1,0 +1,149 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "API Gateway for fetching and processing GitHub repository information.\nThe system demonstrates a microservices workflow with API Gateway, Processor, and Collector services.\nBuilt with Clean Architecture principles and gRPC for internal communication.",
+    "title": "Repo Stat API",
+    "contact": {
+      "name": "API Support",
+      "url": "https://github.com/Friend-zva/golang-course-task3"
+    },
+    "version": "1.0.0"
+  },
+  "host": "localhost:28080",
+  "basePath": "/",
+  "paths": {
+    "/api/ping": {
+      "get": {
+        "description": "Monitors the availability of the entire internal chain (Processor and Subscriber).\nReturns 200 OK if all services are reachable, or 503 Service Unavailable if any service is down.",
+        "produces": ["application/json"],
+        "tags": ["status"],
+        "summary": "Health Check \u0026 Service Discovery",
+        "responses": {
+          "200": {
+            "description": "Successful response (All services UP)",
+            "schema": {
+              "$ref": "#/definitions/github_com_Friend-zva_golang-course-task3_repo-stat_api_internal_dto.PingResponse"
+            }
+          },
+          "503": {
+            "description": "Service Unavailable (System Degraded)",
+            "schema": {
+              "$ref": "#/definitions/github_com_Friend-zva_golang-course-task3_repo-stat_api_internal_dto.PingResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/repositories/info": {
+      "get": {
+        "description": "Get information about a GitHub repository such as name, description, stars, forks, and creation date",
+        "produces": ["application/json"],
+        "tags": ["repository"],
+        "summary": "Get repository info",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "\"https://github.com/golang/go\"",
+            "description": "Full URL of the GitHub repository",
+            "name": "url",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with repository statistics",
+            "schema": {
+              "$ref": "#/definitions/github_com_Friend-zva_golang-course-task3_repo-stat_api_internal_dto.GetInfoRepoOutput"
+            }
+          },
+          "400": {
+            "description": "Invalid URL format",
+            "schema": {
+              "$ref": "#/definitions/internal_controller_http.ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Repository not found",
+            "schema": {
+              "$ref": "#/definitions/internal_controller_http.ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/internal_controller_http.ErrorResponse"
+            }
+          },
+          "502": {
+            "description": "External GitHub API error",
+            "schema": {
+              "$ref": "#/definitions/internal_controller_http.ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "github_com_Friend-zva_golang-course-task3_repo-stat_api_internal_dto.GetInfoRepoOutput": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "example": "Fri, 20 Aug 2021 09:38:00 UTC"
+        },
+        "description": {
+          "type": "string",
+          "example": "Homework for GoLang course 2026"
+        },
+        "forks": {
+          "type": "integer",
+          "example": 45
+        },
+        "full_name": {
+          "type": "string",
+          "example": "golang-course"
+        },
+        "stars": {
+          "type": "integer",
+          "example": 52
+        }
+      }
+    },
+    "github_com_Friend-zva_golang-course-task3_repo-stat_api_internal_dto.PingResponse": {
+      "type": "object",
+      "properties": {
+        "services": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/github_com_Friend-zva_golang-course-task3_repo-stat_api_internal_dto.ServiceStatus"
+          }
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "github_com_Friend-zva_golang-course-task3_repo-stat_api_internal_dto.ServiceStatus": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "internal_controller_http.ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "example": "repo 'go-course' not found"
+        }
+      }
+    }
+  }
+}

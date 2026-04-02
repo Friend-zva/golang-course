@@ -26,6 +26,18 @@ func NewInfoRepoHandler(log *slog.Logger, usecase ProcessorGetInfoRepo) *InfoRep
 	}
 }
 
+// InfoRepoHandler gets information about a GitHub repository.
+// @Summary Get repository info
+// @Description Get information about a GitHub repository such as name, description, stars, forks, and creation date
+// @Tags repository
+// @Produce json
+// @Param url query string true "Full URL of the GitHub repository" example("https://github.com/golang/go")
+// @Success 200 {object} dto.GetInfoRepoOutput "Successful response with repository statistics"
+// @Failure 400 {object} ErrorResponse "Invalid URL format"
+// @Failure 404 {object} ErrorResponse "Repository not found"
+// @Failure 500 {object} ErrorResponse "Internal server error"
+// @Failure 502 {object} ErrorResponse "External GitHub API error"
+// @Router /api/repositories/info [get]
 func (iRH *InfoRepoHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	url := r.URL.Query().Get("url")
 

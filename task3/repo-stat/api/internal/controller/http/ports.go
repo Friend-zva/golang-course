@@ -5,6 +5,9 @@ import (
 	"log/slog"
 	"net/http"
 
+	httpSwagger "github.com/swaggo/http-swagger"
+
+	_ "github.com/Friend-zva/golang-course-task3/repo-stat/api/docs"
 	domain "github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/domain"
 	dto "github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/dto"
 )
@@ -27,6 +30,7 @@ func NewRouter(
 
 	mux.Handle("GET /api/ping", NewPingHandler(log, subscriberPing, processorPing))
 	mux.Handle("GET /api/repositories/info", NewInfoRepoHandler(log, getInfoRepo))
+	mux.Handle("/swagger/", httpSwagger.WrapHandler)
 	mux.HandleFunc("/", NotFoundHandler(log))
 
 	return mux

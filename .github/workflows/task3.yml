@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-      # // TODO: other folders
+        # // TODO: other folders
         working-directory: task3
     steps:
       - uses: actions/checkout@v5

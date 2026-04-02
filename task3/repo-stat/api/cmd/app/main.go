@@ -65,6 +65,13 @@ func run(ctx context.Context) error {
 	return nil
 }
 
+// @title Repo Stat API
+// @version 1.0.0
+// @description API Gateway for fetching and processing GitHub repository information.
+// @description The system demonstrates a microservices workflow with API Gateway, Processor, and Collector services.
+// @description Built with Clean Architecture principles and gRPC for internal communication.
+// @host localhost:28080
+// @BasePath /
 func main() {
 	ctx := context.Background()
 	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt)

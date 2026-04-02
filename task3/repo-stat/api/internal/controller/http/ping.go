@@ -23,6 +23,15 @@ func NewPingHandler(log *slog.Logger, sub ServicePing, proc ServicePing) *PingHa
 	}
 }
 
+// PingHandler gets information about status Processor & Subscriber service.
+// @Summary Health Check & Service Discovery
+// @Description Monitors the availability of the entire internal chain (Processor and Subscriber).
+// @Description Returns 200 OK if all services are reachable, or 503 Service Unavailable if any service is down.
+// @Tags status
+// @Produce json
+// @Success 200 {object} dto.PingResponse "Successful response (All services UP)"
+// @Failure 503 {object} dto.PingResponse "Service Unavailable (System Degraded)"
+// @Router /api/ping [get]
 func (pH *PingHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	subStatus := pH.subscriberPing.Execute(r.Context())
 	procStatus := pH.processorPing.Execute(r.Context())
