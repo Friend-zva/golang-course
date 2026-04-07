@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package collector.api.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/Friend-zva/golang-course-task2/collector/pkg/api/v1;v1";
+
+message GetInfoRepoRequest {
+  string owner = 1;
+  string repo = 2;
+}
+
+message GetInfoRepoResponse {
+  string name = 1 [ json_name = "name" ];
+  string description = 2 [ json_name = "description" ];
+  google.protobuf.Timestamp date_creation = 3 [ json_name = "date_creation" ];
+  int32 count_stargazers = 4 [ json_name = "count_stargazers" ];
+  int32 count_forks = 5 [ json_name = "count_forks" ];
+}
+
+service InfoRepoService {
+  rpc GetInfoRepo(GetInfoRepoRequest) returns (GetInfoRepoResponse) {
+  }
+}

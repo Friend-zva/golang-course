@@ -1,0 +1,86 @@
+name: task2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main", "task2"]
+    paths: [./task2/**]
+  pull_request:
+    branches: ["**"]
+    paths: [./task2/**]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-task2
+  cancel-in-progress: true
+
+jobs:
+  formatter:
+    name: Formatter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v6
+
+      - name: Setup Go
+        uses: ./.github/actions/setup-go
+        with:
+          task: task2
+
+      - name: Run gofmt
+        working-directory: ./task2
+        run: gofmt -d .
+
+  linter:
+    name: Linter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v6
+
+      - name: Setup Go
+        uses: ./.github/actions/setup-go
+        with:
+          task: task2
+
+      - name: Run golangci-lint for API Gateway
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v2.10
+          working-directory: ./task2/api_gateway
+
+      - name: Run golangci-lint for Collector
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v2.10
+          working-directory: ./task2/collector
+
+  tests:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v6
+
+      - name: Setup Go
+        uses: ./.github/actions/setup-go
+        with:
+          task: task2
+
+      - name: Generate proto
+        working-directory: ./task2/proto
+        run: make all
+
+      - name: Build API Gateway
+        working-directory: ./task2/api_gateway
+        run: go build -o bin/api_gateway ./cmd/app
+
+      - name: Build Collector
+        working-directory: ./task2/collector
+        run: go build -o bin/collector ./cmd/app
+
+      - name: Test Docker Compose Build
+        working-directory: ./task2
+        run: docker compose build

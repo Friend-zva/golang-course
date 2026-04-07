@@ -1,6 +1,7 @@
 name: Task1
 
 on:
+  workflow_dispatch:
   push:
     branches: ["main", "task1"]
     paths: [./task1/**]
@@ -8,8 +9,60 @@ on:
     branches: ["**"]
     paths: [./task1/**]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-task1
+  cancel-in-progress: true
+
 jobs:
-  task:
-    uses: ./.github/workflows/template.yml
-    with:
-      task: task1
+  formatter:
+    name: Formatter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v6
+
+      - name: Setup Go
+        uses: ./.github/actions/setup-go
+        with:
+          task: task1
+
+      - name: Run gofmt
+        working-directory: ./task1
+        run: gofmt -d .
+
+  linter:
+    name: Linter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v6
+
+      - name: Setup Go
+        uses: ./.github/actions/setup-go
+        with:
+          task: task1
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v2.10
+          working-directory: ./task1
+
+  tests:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v6
+
+      - name: Setup Go
+        uses: ./.github/actions/setup-go
+        with:
+          task: task1
+
+      - name: Build
+        working-directory: ./task1
+        run: go build -v

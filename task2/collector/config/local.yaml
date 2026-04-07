@@ -1,0 +1,6 @@
+env: "local"
+
+collector_server:
+  address: "localhost:8081"
+  timeout: 4s
+  idle_timeout: 60s
