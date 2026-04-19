@@ -3,7 +3,7 @@ package env
 import (
 	"log"
 
-	"github.com/ilyakaznacheev/cleanenv"
+	cleanenv "github.com/ilyakaznacheev/cleanenv"
 )
 
 func MustLoad(path string, cfg interface{}) {

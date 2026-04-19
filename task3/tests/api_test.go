@@ -4,13 +4,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/require"
 )
 
-const address = "http://localhost:28080"
+var address = "http://localhost:28080"
+
+func init() {
+	if envAddr := os.Getenv("API_ADDRESS"); envAddr != "" {
+		address = envAddr
+	}
+}
 
 var client = http.Client{
 	Timeout: 30 * time.Second,

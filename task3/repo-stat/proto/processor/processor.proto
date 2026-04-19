@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package processor.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package =
+"github.com/Friend-zva/golang-course-task3/processor/v1;processorv1";
+
+service Processor {
+  rpc GetInfoRepo(GetInfoRepoRequest)
+  returns (GetInfoRepoResponse) {
+  }
+  rpc Ping(PingRequest) returns (PingResponse);
+}
+
+message GetInfoRepoRequest {
+  string owner = 1;
+  string repo  = 2;
+}
+
+message GetInfoRepoResponse {
+  string                    name             = 1 [ json_name = "name" ];
+  string                    description      = 2 [ json_name = "description" ];
+  google.protobuf.Timestamp date_creation    = 3
+  [ json_name = "date_creation" ];
+  int32                     count_stargazers = 4
+  [ json_name = "count_stargazers" ];
+  int32                     count_forks      = 5 [ json_name = "count_forks" ];
+}
+
+message PingRequest {
+}
+
+message PingResponse {
+  string reply = 1;
+}

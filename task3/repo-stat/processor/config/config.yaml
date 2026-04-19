@@ -1,0 +1,12 @@
+app:
+  app_name: "repo-stat-processor"
+
+grpc:
+  address: "localhost:8082"
+  timeout_sec: 5
+
+logger:
+  log_level: "DEBUG"
+
+services:
+  collector: "localhost:8083"

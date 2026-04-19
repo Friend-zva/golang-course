@@ -1,9 +1,11 @@
 package config
 
 import (
-	"repo-stat/platform/env"
-	"repo-stat/platform/grpcserver"
-	"repo-stat/platform/logger"
+	"time"
+
+	env "github.com/Friend-zva/golang-course-task3/repo-stat/platform/env"
+	grpcserver "github.com/Friend-zva/golang-course-task3/repo-stat/platform/grpcserver"
+	logger "github.com/Friend-zva/golang-course-task3/repo-stat/platform/logger"
 )
 
 type App struct {
@@ -24,5 +26,6 @@ type Config struct {
 func MustLoad(path string) Config {
 	var cfg Config
 	env.MustLoad(path, &cfg)
+	cfg.GRPC.Timeout = time.Duration(cfg.GRPC.TimeoutSec) * time.Second
 	return cfg
 }

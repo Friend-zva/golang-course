@@ -1,9 +1,11 @@
 package config
 
 import (
-	"repo-stat/platform/env"
-	"repo-stat/platform/httpserver"
-	"repo-stat/platform/logger"
+	"time"
+
+	env "github.com/Friend-zva/golang-course-task3/repo-stat/platform/env"
+	httpserver "github.com/Friend-zva/golang-course-task3/repo-stat/platform/httpserver"
+	logger "github.com/Friend-zva/golang-course-task3/repo-stat/platform/logger"
 )
 
 type App struct {
@@ -12,6 +14,7 @@ type App struct {
 
 type Services struct {
 	Subscriber string `yaml:"subscriber" env:"SUBSCRIBER_ADDRESS" env-default:"localhost:8081"`
+	Processor  string `yaml:"processor" env:"PROCESSOR_ADDRESS" env-default:"localhost:8082"`
 }
 
 type Config struct {
@@ -24,5 +27,6 @@ type Config struct {
 func MustLoad(path string) Config {
 	var cfg Config
 	env.MustLoad(path, &cfg)
+	cfg.HTTP.Timeout = time.Duration(cfg.HTTP.TimeoutSec) * time.Second
 	return cfg
 }
