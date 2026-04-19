@@ -4,7 +4,7 @@ import (
 	"context"
 	"log/slog"
 
-	dto "github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/dto"
+	domain "github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/domain"
 	processorpb "github.com/Friend-zva/golang-course-task3/repo-stat/proto/processor"
 )
 
@@ -13,7 +13,7 @@ type Ping interface {
 }
 
 type CollectorGetInfoRepo interface {
-	Execute(ctx context.Context, input dto.GetInfoRepoInput) (dto.GetInfoRepoOutput, error)
+	Execute(ctx context.Context, owner, repo string) (domain.InfoRepo, error)
 }
 
 type Handler struct {

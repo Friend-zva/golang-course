@@ -8,7 +8,6 @@ import (
 	insecure "google.golang.org/grpc/credentials/insecure"
 
 	domain "github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/domain"
-	dto "github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/dto"
 	apperror "github.com/Friend-zva/golang-course-task3/repo-stat/platform/apperror"
 	processorpb "github.com/Friend-zva/golang-course-task3/repo-stat/proto/processor"
 )
@@ -45,10 +44,10 @@ func (c *Client) Ping(ctx context.Context) domain.PingStatus {
 	return domain.PingStatusUp
 }
 
-func (c *Client) GetInfoRepo(ctx context.Context, input dto.ProcessorGetRepoInfoInput) (domain.InfoRepo, error) {
+func (c *Client) GetInfoRepo(ctx context.Context, owner, repo string) (domain.InfoRepo, error) {
 	req := processorpb.GetInfoRepoRequest{
-		Owner: input.Owner,
-		Repo:  input.Repo,
+		Owner: owner,
+		Repo:  repo,
 	}
 
 	resp, err := c.pb.GetInfoRepo(ctx, &req)

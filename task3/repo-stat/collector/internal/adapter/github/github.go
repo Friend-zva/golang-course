@@ -10,7 +10,6 @@ import (
 	"time"
 
 	domain "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/domain"
-	dto "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/dto"
 	apperror "github.com/Friend-zva/golang-course-task3/repo-stat/platform/apperror"
 )
 
@@ -34,8 +33,8 @@ type githubGetInfoRepoOutput struct {
 	CountForks      int       `json:"forks"`
 }
 
-func (c *Client) GetInfoRepo(ctx context.Context, input dto.GitHubGetInfoRepoInput) (domain.InfoRepo, error) {
-	url := fmt.Sprintf("https://api.github.com/repos/%s/%s", input.Owner, input.Repo)
+func (c *Client) GetInfoRepo(ctx context.Context, owner, repo string) (domain.InfoRepo, error) {
+	url := fmt.Sprintf("https://api.github.com/repos/%s/%s", owner, repo)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
@@ -58,7 +57,7 @@ func (c *Client) GetInfoRepo(ctx context.Context, input dto.GitHubGetInfoRepoInp
 	case http.StatusOK:
 		break
 	case http.StatusNotFound:
-		mes := fmt.Sprintf("repo '%s' not found", input.Repo)
+		mes := fmt.Sprintf("repo '%s' not found", repo)
 		return domain.InfoRepo{}, apperror.ErrNotFound.WithMessage(mes)
 	default:
 		mes := fmt.Sprintf("github api returned status: %s", resp.Status)

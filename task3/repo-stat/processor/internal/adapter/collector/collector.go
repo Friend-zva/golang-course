@@ -9,7 +9,6 @@ import (
 
 	apperror "github.com/Friend-zva/golang-course-task3/repo-stat/platform/apperror"
 	domain "github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/domain"
-	dto "github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/dto"
 	collectorpb "github.com/Friend-zva/golang-course-task3/repo-stat/proto/collector"
 )
 
@@ -35,10 +34,10 @@ func NewClient(address string, log *slog.Logger) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) GetInfoRepo(ctx context.Context, input dto.CollectorGetInfoRepoInput) (domain.InfoRepo, error) {
+func (c *Client) GetInfoRepo(ctx context.Context, owner, repo string) (domain.InfoRepo, error) {
 	req := collectorpb.GetInfoRepoRequest{
-		Owner: input.Owner,
-		Repo:  input.Repo,
+		Owner: owner,
+		Repo:  repo,
 	}
 
 	resp, err := c.pb.GetInfoRepo(ctx, &req)

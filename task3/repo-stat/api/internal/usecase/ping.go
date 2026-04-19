@@ -6,10 +6,6 @@ import (
 	domain "github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/domain"
 )
 
-type Pinger interface {
-	Ping(ctx context.Context) domain.PingStatus
-}
-
 type Ping struct {
 	pinger Pinger
 }

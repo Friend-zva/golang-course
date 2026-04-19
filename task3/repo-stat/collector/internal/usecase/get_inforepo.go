@@ -4,11 +4,10 @@ import (
 	"context"
 
 	domain "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/domain"
-	dto "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/dto"
 )
 
 type GitHub interface {
-	GetInfoRepo(ctx context.Context, input dto.GitHubGetInfoRepoInput) (domain.InfoRepo, error)
+	GetInfoRepo(ctx context.Context, owner, repo string) (domain.InfoRepo, error)
 }
 
 type GetInfoRepo struct {
@@ -21,15 +20,11 @@ func NewGetInfoRepo(github GitHub) *GetInfoRepo {
 	}
 }
 
-func (gIR *GetInfoRepo) Execute(ctx context.Context, input dto.GetInfoRepoInput) (dto.GetInfoRepoOutput, error) {
-	inputGH := dto.GitHubGetInfoRepoInput(input)
-
-	info, err := gIR.github.GetInfoRepo(ctx, inputGH)
+func (gIR *GetInfoRepo) Execute(ctx context.Context, owner, repo string) (domain.InfoRepo, error) {
+	info, err := gIR.github.GetInfoRepo(ctx, owner, repo)
 	if err != nil {
-		return dto.GetInfoRepoOutput{}, err
+		return domain.InfoRepo{}, err
 	}
 
-	return dto.GetInfoRepoOutput{
-		InfoRepo: info,
-	}, nil
+	return info, nil
 }

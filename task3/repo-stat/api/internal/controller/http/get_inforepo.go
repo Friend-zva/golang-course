@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"time"
 
 	dto "github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/dto"
 	pkg "github.com/Friend-zva/golang-course-task3/repo-stat/api/pkg"
@@ -48,12 +49,7 @@ func (iRH *InfoRepoHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	input := dto.GetInfoRepoInput{
-		Owner: owner,
-		Repo:  repo,
-	}
-
-	output, err := iRH.usecase.Execute(r.Context(), input)
+	output, err := iRH.usecase.Execute(r.Context(), owner, repo)
 	if err != nil {
 		var errApp *apperror.AppError
 		if !errors.As(err, &errApp) {
@@ -66,5 +62,13 @@ func (iRH *InfoRepoHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pkg.WriteJSON(*iRH.log, w, http.StatusOK, output)
+	resp := dto.GetInfoRepoResponse{
+		Name:            output.Name,
+		Description:     output.Description,
+		DateCreation:    output.DateCreation.Format(time.RFC3339),
+		CountStargazers: output.CountStargazers,
+		CountForks:      output.CountForks,
+	}
+
+	pkg.WriteJSON(*iRH.log, w, http.StatusOK, resp)
 }

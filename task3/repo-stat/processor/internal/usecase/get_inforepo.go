@@ -4,11 +4,10 @@ import (
 	"context"
 
 	domain "github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/domain"
-	dto "github.com/Friend-zva/golang-course-task3/repo-stat/processor/internal/dto"
 )
 
 type Collector interface {
-	GetInfoRepo(ctx context.Context, input dto.CollectorGetInfoRepoInput) (domain.InfoRepo, error)
+	GetInfoRepo(ctx context.Context, owner, repo string) (domain.InfoRepo, error)
 }
 
 type GetInfoRepo struct {
@@ -21,13 +20,11 @@ func NewGetInfoRepo(collector Collector) *GetInfoRepo {
 	}
 }
 
-func (gIR *GetInfoRepo) Execute(ctx context.Context, input dto.GetInfoRepoInput) (dto.GetInfoRepoOutput, error) {
-	inputGH := dto.CollectorGetInfoRepoInput(input)
-
-	info, err := gIR.collector.GetInfoRepo(ctx, inputGH)
+func (gIR *GetInfoRepo) Execute(ctx context.Context, owner, repo string) (domain.InfoRepo, error) {
+	info, err := gIR.collector.GetInfoRepo(ctx, owner, repo)
 	if err != nil {
-		return dto.GetInfoRepoOutput{}, err
+		return domain.InfoRepo{}, err
 	}
 
-	return dto.GetInfoRepoOutput(info), nil
+	return info, nil
 }

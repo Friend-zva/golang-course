@@ -9,7 +9,6 @@ import (
 
 	_ "github.com/Friend-zva/golang-course-task3/repo-stat/api/docs"
 	domain "github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/domain"
-	dto "github.com/Friend-zva/golang-course-task3/repo-stat/api/internal/dto"
 )
 
 type ServicePing interface {
@@ -17,7 +16,7 @@ type ServicePing interface {
 }
 
 type ProcessorGetInfoRepo interface {
-	Execute(ctx context.Context, input dto.GetInfoRepoInput) (dto.GetInfoRepoOutput, error)
+	Execute(ctx context.Context, owner, repo string) (domain.InfoRepo, error)
 }
 
 func NewRouter(

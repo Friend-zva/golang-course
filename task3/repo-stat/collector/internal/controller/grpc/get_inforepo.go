@@ -6,13 +6,13 @@ import (
 
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 
-	dto "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/dto"
-	"github.com/Friend-zva/golang-course-task3/repo-stat/platform/apperror"
+	domain "github.com/Friend-zva/golang-course-task3/repo-stat/collector/internal/domain"
+	apperror "github.com/Friend-zva/golang-course-task3/repo-stat/platform/apperror"
 	collectorpb "github.com/Friend-zva/golang-course-task3/repo-stat/proto/collector"
 )
 
 type GitHubGetInfoRepo interface {
-	Execute(ctx context.Context, input dto.GetInfoRepoInput) (dto.GetInfoRepoOutput, error)
+	Execute(ctx context.Context, owner, repo string) (domain.InfoRepo, error)
 }
 
 type InfoRepoHandler struct {
@@ -29,12 +29,7 @@ func NewInfoRepoHandler(log *slog.Logger, usecase GitHubGetInfoRepo) *InfoRepoHa
 }
 
 func (iRH *InfoRepoHandler) GetInfoRepo(ctx context.Context, req *collectorpb.GetInfoRepoRequest) (*collectorpb.GetInfoRepoResponse, error) {
-	input := dto.GetInfoRepoInput{
-		Owner: req.Owner,
-		Repo:  req.Repo,
-	}
-
-	output, err := iRH.usecase.Execute(ctx, input)
+	output, err := iRH.usecase.Execute(ctx, req.Owner, req.Repo)
 	if err != nil {
 		return nil, apperror.Pack(err)
 	}
